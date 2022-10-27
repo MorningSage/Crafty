@@ -81,6 +81,7 @@ public static class CraftyEssentials
     public static async Task DownloadVersion(string version)
     {
         string CraftyPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/.crafty";
+        Directory.CreateDirectory($"{CraftyPath}/versions/{version}");
         string Path = $"{CraftyPath}/versions/{version}/{version}.jar";
         if (File.Exists(Path)) { return; }
 
@@ -102,6 +103,7 @@ public static class CraftyEssentials
     public static async Task DownloadJson(string version)
     {
         string CraftyPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/.crafty";
+        Directory.CreateDirectory($"{CraftyPath}/versions/{version}");
         string Path = $"{CraftyPath}/versions/{version}/{version}.json";
         if (File.Exists(Path)) { return; }
 
@@ -123,12 +125,14 @@ public static class CraftyEssentials
     public static async Task DownloadJava()
     {
         string CraftyPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/.crafty";
+        Directory.CreateDirectory($"{CraftyPath}/temp");
         string TempPath = $"{CraftyPath}/temp/{RandomString(10)}.zip";
         if (File.Exists(TempPath)) { return; }
 
         var Downloader = new DownloadService(DownloadConfig);
-        Downloader.DownloadFileTaskAsync($"https://download.oracle.com/java/19/latest/jdk-19_windows-x64_bin.zip", TempPath);
+        await Downloader.DownloadFileTaskAsync($"https://download.oracle.com/java/19/latest/jdk-19_windows-x64_bin.zip", TempPath);
 
+        Directory.CreateDirectory($"{CraftyPath}/java");
         await Task.Run(() => ZipFile.ExtractToDirectory(TempPath, $"{CraftyPath}/java"));
         await Task.Run(() => File.Delete(TempPath));
     }
