@@ -7,45 +7,54 @@
         mc:Ignorable="d"
         Title="Crafty"
         Height="500" Width="800"
-        MinHeight="400" MinWidth="600">
+        MinHeight="400" MinWidth="600"
+        Background="DimGray">
     <Grid>
-        <Grid VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin="10">
-            <Grid.RowDefinitions>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-                <RowDefinition/>
-            </Grid.RowDefinitions>
+        <Border VerticalAlignment="Bottom" HorizontalAlignment="Center" CornerRadius="15" Margin="10" Padding="10">
+            <Border.Background>
+                <SolidColorBrush Color="White" Opacity="0.5"/>
+            </Border.Background>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                    <RowDefinition/>
+                </Grid.RowDefinitions>
 
-            <TextBlock HorizontalAlignment="Center" FontSize="28" FontWeight="Bold" Margin="5">Crafty</TextBlock>
-            
-            <Grid Grid.Row="1" Margin="5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-                
-                <TextBlock Grid.Column="0" FontSize="17">Username</TextBlock>
-                <TextBox Grid.Column="1" x:Name="Username" Width="150" Height="25" FontSize="17"/>
+                <TextBlock HorizontalAlignment="Center" FontSize="28" FontWeight="Bold" Margin="5">Crafty</TextBlock>
+
+                <Grid Grid.Row="1" Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" FontSize="17">Username</TextBlock>
+                    <TextBox Grid.Column="1" x:Name="Username" Width="150" Height="25" FontSize="17"/>
+                </Grid>
+
+                <Grid Grid.Row="2" Margin="5">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" FontSize="17">Version</TextBlock>
+                    <ComboBox Grid.Column="1" x:Name="VersionList" Width="150" Height="25"/>
+                </Grid>
+
+                <Grid Grid.Row="3" Margin="5">
+                    <Button x:Name="Play" Click="PlayEvent" Content="Play" Width="300" Height="25"/>
+                </Grid>
             </Grid>
+        </Border>
 
-            <Grid Grid.Row="2" Margin="5">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition/>
-                    <ColumnDefinition/>
-                </Grid.ColumnDefinitions>
-
-                <TextBlock Grid.Column="0" FontSize="17">Version</TextBlock>
-                <ComboBox Grid.Column="1" x:Name="VersionList" Width="150" Height="25"/>
-            </Grid>
-
-            <Grid Grid.Row="3" Margin="5">
-                <Button x:Name="Play" Click="PlayEvent" Content="Play" Width="300" Height="25"/>
-            </Grid>
-        </Grid>
-
-        <StackPanel VerticalAlignment="Top" HorizontalAlignment="Center" Margin="10">
-            <TextBlock HorizontalAlignment="Center" x:Name="DownloadText" FontSize="12"/>
-        </StackPanel>
+        <Border VerticalAlignment="Top" HorizontalAlignment="Center" CornerRadius="10" Margin="10" Padding="10">
+            <Border.Background>
+                <SolidColorBrush Color="White" Opacity="0.5"/>
+            </Border.Background>
+            <TextBlock HorizontalAlignment="Center" x:Name="DownloadText" FontSize="12" FontWeight="Bold">Welcome to Crafty!</TextBlock>
+        </Border>
     </Grid>
 </Window>
