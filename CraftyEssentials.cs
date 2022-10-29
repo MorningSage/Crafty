@@ -9,6 +9,7 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
+using CmlLib.Core.Auth;
 
 namespace Crafty;
 
@@ -16,9 +17,10 @@ public static class CraftyEssentials
 {
     public static string CraftyPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/.crafty";
     public static string JavaPath = $"{CraftyPath}/java";
-    public static string AllowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_123456789";
+    public static string AllowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_1234567890";
     public static string VersionManifest = "https://piston-meta.mojang.com/mc/game/version_manifest.json";
     public static string LatestVersion = null;
+    public static MSession Session = null;
     public static DownloadConfiguration DownloadConfig = new DownloadConfiguration()
     {
         ChunkCount = 8,
@@ -43,6 +45,8 @@ public static class CraftyEssentials
             if (!AllowedChars.Contains(unvalid.ToString()))
                 return false;
         }
+
+        if (username.Length < 3 || username.Length > 16 || string.IsNullOrEmpty(username)) { return false; }
 
         return true;
     }

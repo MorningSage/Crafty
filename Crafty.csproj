@@ -9,6 +9,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="background.png" />
     <None Remove="MainWindow.xaml.cs~RF126c3d6.TMP" />
   </ItemGroup>
 
@@ -18,9 +19,16 @@
 
   <ItemGroup>
     <PackageReference Include="CmlLib.Core" Version="3.3.5" />
+    <PackageReference Include="CmlLib.Core.Auth.Microsoft" Version="2.2.0" />
+    <PackageReference Include="CmlLib.Core.Auth.Microsoft.UI.Wpf" Version="2.0.2" />
     <PackageReference Include="Downloader" Version="3.0.0-beta" />
+    <PackageReference Include="MaterialDesignThemes" Version="4.6.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="RestSharp" Version="108.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="background.png" />
   </ItemGroup>
 
 </Project>

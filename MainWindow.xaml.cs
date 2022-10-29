@@ -3,13 +3,14 @@ using System.Threading.Tasks;
 using System.Windows;
 using CmlLib.Core;
 using CmlLib.Core.Auth;
-using CmlLib.Core.Version;
+using CmlLib.Core.Auth.Microsoft.UI.Wpf;
 
 namespace Crafty;
 
 public partial class MainWindow : Window
 {
     public static MainWindow Current;
+    MicrosoftLoginWindow Window;
 
     public MainWindow()
     {
@@ -17,11 +18,13 @@ public partial class MainWindow : Window
         InitializeComponent();
         CraftyEssentials.GetVersions();
         VersionList.SelectedItem = CraftyEssentials.LatestVersion;
+
+        Window = new MicrosoftLoginWindow();
     }
 
     public async void PlayEvent(object sender, RoutedEventArgs e)
     {
-        if (string.IsNullOrEmpty(Username.Text) || !CraftyEssentials.CheckUsername(Username.Text))
+        if (!CraftyEssentials.CheckUsername(Username.Text))
         {
             MessageBox.Show($"Wrong username!");
             return;
@@ -32,7 +35,7 @@ public partial class MainWindow : Window
         var launchOption = new MLaunchOption
         {
             MaximumRamMb = 2048,
-            Session = MSession.GetOfflineSession(Username.Text),
+            Session = CraftyEssentials.Session,
             JavaPath = $"{CraftyEssentials.JavaPath}/bin/javaw.exe",
             JavaVersion = "19"
         };
@@ -47,7 +50,7 @@ public partial class MainWindow : Window
         DownloadText.Text = $"Downloading {(string)VersionList.SelectedItem}.jar";
         await CraftyEssentials.DownloadVersion((string)VersionList.SelectedItem);
 
-        DownloadText.Text = $"Downloading {(string)VersionList.SelectedItem}.jar";
+        DownloadText.Text = $"Downloading {(string)VersionList.SelectedItem}.json";
         await CraftyEssentials.DownloadJson((string)VersionList.SelectedItem);
 
         DownloadText.Text = "Downloading assets...";
@@ -66,9 +69,18 @@ public partial class MainWindow : Window
         Play.IsEnabled = true;
     }
 
-    public async void TestEvent(object sender, RoutedEventArgs e)
+    public async void AddAccountEvent(object sender, RoutedEventArgs e)
     {
-        await CraftyEssentials.DownloadLibraries((string)VersionList.SelectedItem);
+        MicrosoftLoginWindow LoginWindow = new MicrosoftLoginWindow();
+        MSession LoginSession = await LoginWindow.ShowLoginDialog();
+        CraftyEssentials.Session = LoginSession;
+        Username.Text = LoginSession.Username;
+    }
+
+    public async void DeleteAccountEvent(object sender, RoutedEventArgs e)
+    {
+        MicrosoftLoginWindow LogoutWindow = new MicrosoftLoginWindow();
+        LogoutWindow.ShowLogoutDialog();
     }
 
     public async void ChangeTitle(string title)
