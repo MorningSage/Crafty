@@ -193,8 +193,11 @@ public static class CraftyEssentials
                 Done++;
 
                 FileInfo HashFile = new FileInfo($"{ObjectPath}/{Hash}");
-                if (HashFile.Exists && HashFile.Length != Size) { HashFile.Delete(); }
-                else if (HashFile.Exists && HashFile.Length == Size) { continue; }
+                if (HashFile.Exists)
+                { 
+                    if (HashFile.Length != Size) { HashFile.Delete(); }
+                    else { continue; }
+                }
 
                 var Downloader = new DownloadService(DownloadConfig);
                 await Downloader.DownloadFileTaskAsync($"http://resources.download.minecraft.net/{ShortHash}/{Hash}", $"{ObjectPath}/{Hash}");
@@ -226,15 +229,18 @@ public static class CraftyEssentials
             Done++;
 
             FileInfo LibraryFile = new FileInfo(LibraryPath);
-            if (LibraryFile.Exists && LibraryFile.Length != Size) { LibraryFile.Delete(); }
-            else if (LibraryFile.Exists && LibraryFile.Length == Size) { continue; }
+            if (LibraryFile.Exists)
+            {
+                if (LibraryFile.Length != Size) { LibraryFile.Delete(); }
+                else { continue; }
+            }
 
             var Downloader = new DownloadService(DownloadConfig);
             await Downloader.DownloadFileTaskAsync(Url, LibraryPath);
         }
     }
 
-public static string GetPackageUrl(string version)
+    public static string GetPackageUrl(string version)
     {
         string JsonPath = $"{CraftyPath}/versions/{version}/{version}.json";
         StreamReader Read = new StreamReader(JsonPath);
