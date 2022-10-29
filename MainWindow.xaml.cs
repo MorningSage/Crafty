@@ -1,5 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using System.Windows;
+using CmlLib.Core;
+using CmlLib.Core.Auth;
+using CmlLib.Core.Version;
 
 namespace Crafty;
 
@@ -23,26 +27,40 @@ public partial class MainWindow : Window
             return;
         }
 
+        var path = new MinecraftPath(CraftyEssentials.CraftyPath);
+        var launcher = new CMLauncher(path);
+        var launchOption = new MLaunchOption
+        {
+            MaximumRamMb = 2048,
+            Session = MSession.GetOfflineSession(Username.Text),
+            JavaPath = $"{CraftyEssentials.JavaPath}/bin/javaw.exe",
+            JavaVersion = "19"
+        };
+
         Username.IsEnabled = false;
         VersionList.IsEnabled = false;
         Play.IsEnabled = false;
 
-        DownloadText.Text = "Downloading Java...";
+        DownloadText.Text = "Downloading Java 19";
         await CraftyEssentials.DownloadJava();
 
-        DownloadText.Text = "Downloading Jar...";
+        DownloadText.Text = $"Downloading {(string)VersionList.SelectedItem}.jar";
         await CraftyEssentials.DownloadVersion((string)VersionList.SelectedItem);
 
-        DownloadText.Text = "Downloading Json...";
+        DownloadText.Text = $"Downloading {(string)VersionList.SelectedItem}.jar";
         await CraftyEssentials.DownloadJson((string)VersionList.SelectedItem);
 
-        DownloadText.Text = "Downloading Assets...";
+        DownloadText.Text = "Downloading assets...";
         await CraftyEssentials.DownloadAssets((string)VersionList.SelectedItem);
 
-        DownloadText.Text = "Downloading Libraries...";
+        DownloadText.Text = "Downloading libraries...";
         await CraftyEssentials.DownloadLibraries((string)VersionList.SelectedItem);
 
-        DownloadText.Text = $"Launching Minecraft {VersionList.SelectedItem}...";
+        DownloadText.Text = $"Downloading missing files...";
+        var process = await launcher.CreateProcessAsync((string)VersionList.SelectedItem, launchOption, false);
+        process.Start();
+        DownloadText.Text = $"Launched Minecraft {VersionList.SelectedItem}";
+
         Username.IsEnabled = true;
         VersionList.IsEnabled = true;
         Play.IsEnabled = true;
@@ -65,6 +83,6 @@ public partial class MainWindow : Window
 
     public async Task ChangeDownloadText(string s)
     {
-        DownloadText.Text = s;
+        Dispatcher.Invoke(new Action(() => DownloadText.Text = s));
     }
 }

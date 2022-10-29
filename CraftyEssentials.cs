@@ -5,17 +5,17 @@ using RestSharp;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
-using System.Security.Policy;
 using System.Threading.Tasks;
 
 namespace Crafty;
 
 public static class CraftyEssentials
 {
-    public static string CraftyVersion = "0.1";
     public static string CraftyPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/.crafty";
+    public static string JavaPath = $"{CraftyPath}/java";
     public static string AllowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_123456789";
     public static string VersionManifest = "https://piston-meta.mojang.com/mc/game/version_manifest.json";
     public static string LatestVersion = null;
@@ -27,6 +27,7 @@ public static class CraftyEssentials
         ParallelCount = 4,
         Timeout = 1000,
     };
+
     private static Random random = new Random();
 
     public static string RandomString(int length)
@@ -123,16 +124,40 @@ public static class CraftyEssentials
     {
         Directory.CreateDirectory($"{CraftyPath}/temp");
         string TempPath = $"{CraftyPath}/temp/{RandomString(10)}.zip";
-        var JavaVersions = Directory.GetDirectories($"{CraftyPath}/java", "jdk*");
-        if (File.Exists(TempPath) || JavaVersions.Length != 0) { return; }
+        if (File.Exists($"{JavaPath}/bin/javaw.exe")) { return; }
 
         var Downloader = new DownloadService(DownloadConfig);
         await Downloader.DownloadFileTaskAsync("https://download.oracle.com/java/19/latest/jdk-19_windows-x64_bin.zip", TempPath);
 
-        Directory.CreateDirectory($"{CraftyPath}/java");
-        // await Task.Run(() => ZipFile.ExtractToDirectory(TempPath, $"{CraftyPath}/java"));
-        // await Task.Run(() => File.Delete(TempPath));
+        await Task.Run(async () =>
+        {
+            string JavaVersion;
+            using (ZipArchive Zip = ZipFile.Open(TempPath, ZipArchiveMode.Update))
+            {
+                Zip.ExtractToDirectory($"{CraftyPath}/temp/");
+                JavaVersion = Zip.Entries.First().ToString();
+            }
+            if (Directory.Exists(JavaPath)) { Directory.Delete(JavaPath); }
+            Directory.Move($"{CraftyPath}/temp/{JavaVersion}", JavaPath);
+
+            await ClearTemp();
+        });
         // Unzipping is glitched and can cause app to crash - fix will be added later
+    }
+
+    public static async Task ClearTemp()
+    {
+        DirectoryInfo TempPath = new DirectoryInfo($"{CraftyPath}/temp");
+
+        foreach (FileInfo File in TempPath.GetFiles())
+        {
+            File.Delete();
+        }
+
+        foreach (DirectoryInfo Directory in TempPath.GetDirectories())
+        {
+            Directory.Delete(true);
+        }
     }
 
     public static async Task DownloadAssets(string version)
@@ -145,12 +170,12 @@ public static class CraftyEssentials
 
         if (!File.Exists(JsonPath)) {
             var IndexDownloader = new DownloadService(DownloadConfig);
-            await IndexDownloader.DownloadFileTaskAsync(JsonUrl, JsonPath); ;            
+            await IndexDownloader.DownloadFileTaskAsync(JsonUrl, JsonPath);
         }
 
         StreamReader Read = new StreamReader(JsonPath);
         var Json = JObject.Parse(Read.ReadToEnd()).Values();
-        var Assets = Json.Children();
+        var Assets = Json.Children().ToArray();
         int AssetsLength = Assets.Count();
         int Done = 0;
 
@@ -159,13 +184,17 @@ public static class CraftyEssentials
             foreach (var ObjectInfo in Object)
             {
                 string Hash = (string)ObjectInfo["hash"];
+                int Size = (int)ObjectInfo["size"];
                 string ShortHash = Hash.Substring(0, 2);
                 string ObjectPath = $"{CraftyPath}/assets/objects/{ShortHash}";
                 Directory.CreateDirectory(ObjectPath);
-                await MainWindow.Current.ChangeDownloadText($"Downloading Assets... ({Done}/{AssetsLength})");
+
+                await MainWindow.Current.ChangeDownloadText($"Downloading assets... ({Done}/{AssetsLength})");
                 Done++;
 
-                if (File.Exists($"{ObjectPath}/{Hash}")) { continue; }
+                FileInfo HashFile = new FileInfo($"{ObjectPath}/{Hash}");
+                if (HashFile.Exists && HashFile.Length != Size) { HashFile.Delete(); }
+                else if (HashFile.Exists && HashFile.Length == Size) { continue; }
 
                 var Downloader = new DownloadService(DownloadConfig);
                 await Downloader.DownloadFileTaskAsync($"http://resources.download.minecraft.net/{ShortHash}/{Hash}", $"{ObjectPath}/{Hash}");
@@ -188,21 +217,24 @@ public static class CraftyEssentials
         {
             string LibraryPath = (string)Object["downloads"].SelectTokens("$..path").Last();
             string LibraryFolderPath = Path.GetDirectoryName(LibraryPath);
+            int Size = (int)Object["downloads"].SelectTokens("$..size").Last();
             string Url = $"https://libraries.minecraft.net/{LibraryPath}";
 
             Directory.CreateDirectory(LibraryFolderPath);
 
-            await MainWindow.Current.ChangeDownloadText($"Downloading Libraries... ({Done}/{LibrariesLength})");
+            await MainWindow.Current.ChangeDownloadText($"Downloading libraries... ({Done}/{LibrariesLength})");
             Done++;
 
-            if (File.Exists(LibraryPath)) { continue; }
+            FileInfo LibraryFile = new FileInfo(LibraryPath);
+            if (LibraryFile.Exists && LibraryFile.Length != Size) { LibraryFile.Delete(); }
+            else if (LibraryFile.Exists && LibraryFile.Length == Size) { continue; }
 
             var Downloader = new DownloadService(DownloadConfig);
             await Downloader.DownloadFileTaskAsync(Url, LibraryPath);
         }
     }
 
-    public static string GetPackageUrl(string version)
+public static string GetPackageUrl(string version)
     {
         string JsonPath = $"{CraftyPath}/versions/{version}/{version}.json";
         StreamReader Read = new StreamReader(JsonPath);
