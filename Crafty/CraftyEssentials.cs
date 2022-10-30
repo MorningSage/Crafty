@@ -187,7 +187,6 @@ public static class CraftyEssentials
         int Remaining = Assets.Count();
         int Done = 0;
         int Tasks = 0;
-        Task[] TaskList = { };
 
         foreach (var Object in Assets)
         {
@@ -240,21 +239,20 @@ public static class CraftyEssentials
 
                 Action DownloadAction = async () =>
                 {
-                    await MainWindow.Current.ChangeDownloadText($"Downloading assets ({Done}/{Remaining})");
                     Directory.CreateDirectory(ObjectPath);
                     var Downloader = new DownloadService(DownloadConfig);
                     await Downloader.DownloadFileTaskAsync(Url, HashPath);
                     Done++;
+                    await MainWindow.Current.ChangeDownloadText($"Downloading assets ({Done}/{Remaining})");
                     Tasks--;
                 };
 
                 Task DownloadThread = new Task(DownloadAction);
-                await Task.Run(() => DownloadThread.Start());
-                TaskList.Append(DownloadThread);
+                DownloadThread.Start();
             }
         }
 
-        Task.WaitAll(TaskList);
+        while (Tasks > 0) { await Task.Delay(1000); }
     }
 
     public static async Task DownloadLibraries(string version)
@@ -314,20 +312,19 @@ public static class CraftyEssentials
 
             Action DownloadAction = async () =>
             {
-                await MainWindow.Current.ChangeDownloadText($"Downloading libraries ({Done}/{Remaining})");
                 Directory.CreateDirectory(LibraryFolderPath);
                 var Downloader = new DownloadService(DownloadConfig);
                 await Downloader.DownloadFileTaskAsync(Url, LibraryPath);
                 Done++;
+                await MainWindow.Current.ChangeDownloadText($"Downloading libraries ({Done}/{Remaining})");
                 Tasks--;
             };
 
             Task DownloadThread = new Task(DownloadAction);
-            await Task.Run(() => DownloadThread.Start());
-            TaskList.Append(DownloadThread);
+            DownloadThread.Start();
         }
 
-        Task.WaitAll(TaskList);
+        while (Tasks > 0) { await Task.Delay(1000); }
     }
 
     private static string GetPackageUrl(string version)
