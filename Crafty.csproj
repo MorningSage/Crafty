@@ -5,28 +5,29 @@
     <TargetFramework>net6.0-windows</TargetFramework>
     <Nullable>enable</Nullable>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>icon.ico</ApplicationIcon>
+    <ApplicationIcon>Assets\icon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="background.png" />
+    <None Remove="Assets\background.png" />
     <None Remove="MainWindow.xaml.cs~RF126c3d6.TMP" />
   </ItemGroup>
 
   <ItemGroup>
-    <Content Include="icon.ico" />
+    <Content Include="Assets\icon.ico" />
+    
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="CmlLib.Core.Auth.Microsoft.UI.Wpf" Version="2.0.2" />
-    <PackageReference Include="Downloader" Version="3.0.0-beta" />
+    <PackageReference Include="Downloader" Version="2.4.1" />
     <PackageReference Include="MaterialDesignThemes" Version="4.6.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="RestSharp" Version="108.0.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="background.png" />
+    <Resource Include="Assets\background.png" />
   </ItemGroup>
 
 </Project>
