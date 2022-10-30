@@ -1,16 +1,18 @@
 ﻿using System;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using CmlLib.Core;
 using CmlLib.Core.Auth;
 using CmlLib.Core.Auth.Microsoft.UI.Wpf;
+using CmlLib.Core.Version;
 
 namespace Crafty;
 
 public partial class MainWindow : Window
 {
     public static MainWindow Current;
-    MicrosoftLoginWindow Window;
 
     public MainWindow()
     {
@@ -18,11 +20,9 @@ public partial class MainWindow : Window
         InitializeComponent();
         CraftyEssentials.GetVersions();
         VersionList.SelectedItem = CraftyEssentials.LatestVersion;
-
-        Window = new MicrosoftLoginWindow();
     }
 
-    public async void PlayEvent(object sender, RoutedEventArgs e)
+    private async void PlayEvent(object sender, RoutedEventArgs e)
     {
         if (!CraftyEssentials.CheckUsername(Username.Text))
         {
@@ -30,65 +30,101 @@ public partial class MainWindow : Window
             return;
         }
 
-        var path = new MinecraftPath(CraftyEssentials.CraftyPath);
-        var launcher = new CMLauncher(path);
-        var launchOption = new MLaunchOption
+        if (!CraftyEssentials.LoggedIn) { CraftyEssentials.Session = MSession.GetOfflineSession(Username.Text); }
+
+        string Version = (string)VersionList.SelectedItem;
+        var Path = new MinecraftPath(CraftyEssentials.CraftyPath);
+        var Launcher = new CMLauncher(Path);
+        var LauncherOptions = new MLaunchOption
         {
             MaximumRamMb = 2048,
             Session = CraftyEssentials.Session,
-            JavaPath = $"{CraftyEssentials.JavaPath}/bin/javaw.exe",
-            JavaVersion = "19"
         };
 
         Username.IsEnabled = false;
+        Login.IsEnabled = false;
+        Logout.IsEnabled = false;
         VersionList.IsEnabled = false;
         Play.IsEnabled = false;
 
-        DownloadText.Text = "Downloading Java 19";
-        await CraftyEssentials.DownloadJava();
+        // DownloadText.Text = "Downloading Java";
+        // await CraftyEssentials.DownloadJava();
+        // Java 19 crashes when launching old versions - using CmlLib's "Java downloader" for now
 
-        DownloadText.Text = $"Downloading {(string)VersionList.SelectedItem}.jar";
-        await CraftyEssentials.DownloadVersion((string)VersionList.SelectedItem);
+        DownloadText.Text = $"Downloading {Version}.jar";
+        await CraftyEssentials.DownloadVersion(Version);
 
-        DownloadText.Text = $"Downloading {(string)VersionList.SelectedItem}.json";
-        await CraftyEssentials.DownloadJson((string)VersionList.SelectedItem);
+        DownloadText.Text = $"Downloading {Version}.json";
+        await CraftyEssentials.DownloadJson(Version);
 
-        DownloadText.Text = "Downloading assets...";
-        await CraftyEssentials.DownloadAssets((string)VersionList.SelectedItem);
+        DownloadText.Text = "Fetching assets";
+        await CraftyEssentials.DownloadAssets(Version);
 
-        DownloadText.Text = "Downloading libraries...";
-        await CraftyEssentials.DownloadLibraries((string)VersionList.SelectedItem);
+        DownloadText.Text = "Fetching libraries";
+        await CraftyEssentials.DownloadLibraries(Version);
 
-        DownloadText.Text = $"Downloading missing files...";
-        var process = await launcher.CreateProcessAsync((string)VersionList.SelectedItem, launchOption, false);
+        DownloadText.Text = $"Downloading missing files (this might take a while)";
+        var process = await Launcher.CreateProcessAsync(Version, LauncherOptions, true);
         process.Start();
-        DownloadText.Text = $"Launched Minecraft {VersionList.SelectedItem}";
+        DownloadText.Text = $"Launched Minecraft {Version}";
 
-        Username.IsEnabled = true;
+        await Task.Delay(3000);
+        DownloadText.Text = "Crafty by heapy & Badder1337";
+        if (!CraftyEssentials.LoggedIn)
+        {
+            Username.IsEnabled = true;
+            Login.IsEnabled = true;
+            Logout.IsEnabled = false;
+        }
+        else { Logout.IsEnabled = true; }
         VersionList.IsEnabled = true;
         Play.IsEnabled = true;
     }
 
-    public async void AddAccountEvent(object sender, RoutedEventArgs e)
+    private async void AddAccountEvent(object sender, RoutedEventArgs e)
     {
         MicrosoftLoginWindow LoginWindow = new MicrosoftLoginWindow();
-        MSession LoginSession = await LoginWindow.ShowLoginDialog();
-        CraftyEssentials.Session = LoginSession;
-        Username.Text = LoginSession.Username;
+        LoginWindow.Width = 500;
+        LoginWindow.Height = 500;
+        LoginWindow.Title = Title;
+        try
+        {
+            MSession LoginSession = await LoginWindow.ShowLoginDialog();
+
+            CraftyEssentials.Session = LoginSession;
+            CraftyEssentials.LoggedIn = true;
+            Username.Text = LoginSession.Username;
+            Username.IsEnabled = false;
+            Login.IsEnabled = false;
+            Logout.IsEnabled = true;
+        }
+
+        catch (CmlLib.Core.Auth.Microsoft.LoginCancelledException)
+        {
+            return;
+        }
     }
 
-    public async void DeleteAccountEvent(object sender, RoutedEventArgs e)
+    private void DeleteAccountEvent(object sender, RoutedEventArgs e)
     {
         MicrosoftLoginWindow LogoutWindow = new MicrosoftLoginWindow();
+        LogoutWindow.Width = 500;
+        LogoutWindow.Height = 500;
+        LogoutWindow.Title = Title;
         LogoutWindow.ShowLogoutDialog();
+
+        CraftyEssentials.LoggedIn = false;
+        Username.IsEnabled = true;
+        Login.IsEnabled = true;
+        Logout.IsEnabled = false;
     }
 
-    public async void ChangeTitle(string title)
+    private void OnExit(object sender, CancelEventArgs e)
     {
-        Title = title;
+        Environment.Exit(0);
     }
 
-    public async void AddVersion(string version)
+    public void AddVersion(string version)
     {
         VersionList.Items.Add(version);
     }
