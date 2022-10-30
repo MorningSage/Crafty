@@ -226,7 +226,6 @@ public static class CraftyEssentials
 
                         catch (IOException)
                         {
-                            Done++;
                             Tasks--;
                             continue;
                         }
@@ -234,7 +233,6 @@ public static class CraftyEssentials
 
                     else
                     {
-                        Done++;
                         Tasks--;
                         continue; 
                     }
@@ -302,7 +300,6 @@ public static class CraftyEssentials
 
                     catch (IOException)
                     {
-                        Done++;
                         Tasks--;
                         continue;
                     }
@@ -310,7 +307,6 @@ public static class CraftyEssentials
 
                 else
                 {
-                    Done++;
                     Tasks--;
                     continue;
                 }
