@@ -266,7 +266,6 @@ public static class CraftyEssentials
         int Remaining = Json["libraries"].Count();
         int Done = 0;
         int Tasks = 0;
-        Task[] TaskList = { };
 
         foreach (var Object in Json["libraries"])
         {
