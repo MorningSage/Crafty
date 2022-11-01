@@ -19,12 +19,13 @@ public class Version
 {
     public string name { get; set; }
     public string id { get; set; }
-    public string installed { get; set; }
+    public bool isOriginal { get; set; }
 
-    public Version(string Name, string Id)
+    public Version(string Name, string Id, bool IsOriginal = false)
     {
         name = Name;
         id = Id;
+        isOriginal = IsOriginal;
     }
 }
 
@@ -100,7 +101,7 @@ public static class CraftyEssentials
 
             if (type == "release")
             {
-                CraftyLauncher.VersionList.Add(new Version(id, id));
+                CraftyLauncher.VersionList.Add(new Version(id, id, true));
                 Debug.WriteLine($"Added {id}");
             }
         }
@@ -205,16 +206,8 @@ public static class CraftyEssentials
     private static async Task ClearTemp()
     {
         DirectoryInfo TempPath = new DirectoryInfo($"{CraftyLauncher.CraftyPath}/temp");
-
-        foreach (FileInfo File in TempPath.GetFiles())
-        {
-            File.Delete();
-        }
-
-        foreach (DirectoryInfo Directory in TempPath.GetDirectories())
-        {
-            Directory.Delete(true);
-        }
+        foreach (FileInfo File in TempPath.GetFiles()) { File.Delete(); }
+        foreach (DirectoryInfo Directory in TempPath.GetDirectories()) { Directory.Delete(true); }
     }
 
     public static async Task DownloadAssets(string version)
@@ -382,9 +375,9 @@ public static class CraftyEssentials
         StreamReader Read = new StreamReader(JsonPath);
         JsonTextReader Reader = new JsonTextReader(Read);
         JObject Json = (JObject)JToken.ReadFrom(Reader);
+        Read.Close();
 
-        string Url = (string)Json["assetIndex"]["url"];
-        return Url;
+        return (string)Json["assetIndex"]["url"];
     }
 
     private static string GetPackageId(string version)
@@ -393,8 +386,8 @@ public static class CraftyEssentials
         StreamReader Read = new StreamReader(JsonPath);
         JsonTextReader Reader = new JsonTextReader(Read);
         JObject Json = (JObject)JToken.ReadFrom(Reader);
+        Read.Close();
 
-        string Id = (string)Json["assetIndex"]["id"];
-        return Id;
+        return (string)Json["assetIndex"]["id"];
     }
 }

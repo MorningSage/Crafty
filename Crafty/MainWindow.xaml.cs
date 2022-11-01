@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -43,26 +44,29 @@ public partial class MainWindow : Window
         VersionBox.IsEnabled = false;
         Play.IsEnabled = false;
 
-        // DownloadText.Text = "Downloading Java";
-        // await CraftyEssentials.DownloadJava();
-        // Java 19 crashes when launching old versions - using Minecraft's default Java runtimes for now
+        if (Version.isOriginal)
+        {
+            // DownloadText.Text = "Downloading Java";
+            // await CraftyEssentials.DownloadJava();
+            // Old versions crash on Java 19 - using Minecraft's default Java runtimes for now
 
-        DownloadText.Text = $"Downloading {Version.id}.jar";
-        await CraftyEssentials.DownloadVersion(Version.id);
+            DownloadText.Text = $"Downloading {Version.id}.jar";
+            await CraftyEssentials.DownloadVersion(Version.id);
 
-        DownloadText.Text = $"Downloading {Version.id}.json";
-        await CraftyEssentials.DownloadJson(Version.id);
+            DownloadText.Text = $"Downloading {Version.id}.json";
+            await CraftyEssentials.DownloadJson(Version.id);
 
-        DownloadText.Text = "Fetching assets";
-        await CraftyEssentials.DownloadAssets(Version.id);
+            DownloadText.Text = "Fetching assets";
+            await CraftyEssentials.DownloadAssets(Version.id);
 
-        DownloadText.Text = "Fetching libraries";
-        await CraftyEssentials.DownloadLibraries(Version.id);
+            DownloadText.Text = "Fetching libraries";
+            await CraftyEssentials.DownloadLibraries(Version.id);
+        }
 
         DownloadText.Text = $"Downloading missing files (this might take a while)";
-        UpdateVersionBox();
         var process = await CraftyLauncher.Launcher.CreateProcessAsync(Version.id, CraftyLauncher.LauncherOptions, true);
         process.Start();
+        UpdateVersionBox();
         DownloadText.Text = $"Launched Minecraft {Version.id}";
 
         await Task.Delay(3000);
