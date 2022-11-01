@@ -1,12 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
-using CmlLib.Core;
 using CmlLib.Core.Auth;
+using CmlLib.Core.Auth.Microsoft;
 using CmlLib.Core.Auth.Microsoft.UI.Wpf;
-using CmlLib.Core.Version;
 
 namespace Crafty;
 
@@ -14,12 +14,16 @@ public partial class MainWindow : Window
 {
     public static MainWindow Current;
 
+    private List<Version> VersionList { get { return CraftyLauncher.VersionList; } }
+    private List<Version> FabricVersionList { get { return CraftyLauncher.FabricVersionList; } }
+
     public MainWindow()
     {
         Current = this;
         InitializeComponent();
         CraftyEssentials.GetVersions();
-        VersionList.SelectedItem = CraftyEssentials.LatestVersion;
+        VersionBox.ItemsSource = VersionList;
+        VersionBox.SelectedItem = VersionList.First();
     }
 
     private async void PlayEvent(object sender, RoutedEventArgs e)
@@ -29,108 +33,101 @@ public partial class MainWindow : Window
             MessageBox.Show($"Wrong username!");
             return;
         }
+        
+        if (!CraftyLauncher.LoggedIn) { CraftyLauncher.Session = MSession.GetOfflineSession(Username.Text); }
 
-        if (!CraftyEssentials.LoggedIn) { CraftyEssentials.Session = MSession.GetOfflineSession(Username.Text); }
-
-        string Version = (string)VersionList.SelectedItem;
-        var Path = new MinecraftPath(CraftyEssentials.CraftyPath);
-        var Launcher = new CMLauncher(Path);
-        var LauncherOptions = new MLaunchOption
-        {
-            MaximumRamMb = 2048,
-            Session = CraftyEssentials.Session,
-        };
+        Version Version = (Version)VersionBox.SelectedItem;
 
         Username.IsEnabled = false;
-        Login.IsEnabled = false;
-        Logout.IsEnabled = false;
-        VersionList.IsEnabled = false;
+        LoginLogout.IsEnabled = false;
+        VersionBox.IsEnabled = false;
         Play.IsEnabled = false;
 
         // DownloadText.Text = "Downloading Java";
         // await CraftyEssentials.DownloadJava();
-        // Java 19 crashes when launching old versions - using CmlLib's "Java downloader" for now
+        // Java 19 crashes when launching old versions - using Minecraft's default Java runtimes for now
 
-        DownloadText.Text = $"Downloading {Version}.jar";
-        await CraftyEssentials.DownloadVersion(Version);
+        DownloadText.Text = $"Downloading {Version.id}.jar";
+        await CraftyEssentials.DownloadVersion(Version.id);
 
-        DownloadText.Text = $"Downloading {Version}.json";
-        await CraftyEssentials.DownloadJson(Version);
+        DownloadText.Text = $"Downloading {Version.id}.json";
+        await CraftyEssentials.DownloadJson(Version.id);
 
         DownloadText.Text = "Fetching assets";
-        await CraftyEssentials.DownloadAssets(Version);
+        await CraftyEssentials.DownloadAssets(Version.id);
 
         DownloadText.Text = "Fetching libraries";
-        await CraftyEssentials.DownloadLibraries(Version);
+        await CraftyEssentials.DownloadLibraries(Version.id);
 
         DownloadText.Text = $"Downloading missing files (this might take a while)";
-        var process = await Launcher.CreateProcessAsync(Version, LauncherOptions, true);
+        UpdateVersionBox();
+        var process = await CraftyLauncher.Launcher.CreateProcessAsync(Version.id, CraftyLauncher.LauncherOptions, true);
         process.Start();
-        DownloadText.Text = $"Launched Minecraft {Version}";
+        DownloadText.Text = $"Launched Minecraft {Version.id}";
 
         await Task.Delay(3000);
         DownloadText.Text = "Crafty by heapy & Badder1337";
-        if (!CraftyEssentials.LoggedIn)
+        if (!CraftyLauncher.LoggedIn)
         {
             Username.IsEnabled = true;
-            Login.IsEnabled = true;
-            Logout.IsEnabled = false;
         }
-        else { Logout.IsEnabled = true; }
-        VersionList.IsEnabled = true;
+        LoginLogout.IsEnabled = true;
+        VersionBox.IsEnabled = true;
         Play.IsEnabled = true;
     }
 
-    private async void AddAccountEvent(object sender, RoutedEventArgs e)
+    private async void LoginLogoutEvent(object sender, RoutedEventArgs e)
     {
-        MicrosoftLoginWindow LoginWindow = new MicrosoftLoginWindow();
-        LoginWindow.Width = 500;
-        LoginWindow.Height = 500;
-        LoginWindow.Title = Title;
-        try
+        if (!CraftyLauncher.LoggedIn)
         {
-            MSession LoginSession = await LoginWindow.ShowLoginDialog();
+            MicrosoftLoginWindow LoginWindow = new MicrosoftLoginWindow();
+            LoginWindow.Width = 500;
+            LoginWindow.Height = 500;
+            LoginWindow.Title = Title;
 
-            CraftyEssentials.Session = LoginSession;
-            CraftyEssentials.LoggedIn = true;
-            Username.Text = LoginSession.Username;
-            Username.IsEnabled = false;
-            Login.IsEnabled = false;
-            Logout.IsEnabled = true;
+            try
+            {
+                MSession LoginSession = await LoginWindow.ShowLoginDialog();
+
+                CraftyLauncher.Session = LoginSession;
+                CraftyLauncher.LoggedIn = true;
+                Username.IsEnabled = false;
+                Username.Text = LoginSession.Username;
+                LoginLogout.Content = "Logout";
+            }
+
+            catch (LoginCancelledException)
+            {
+                return;
+            }
         }
 
-        catch (CmlLib.Core.Auth.Microsoft.LoginCancelledException)
+        else
         {
-            return;
+            // LoginHandler CraftyLogin = new LoginHandler();
+            // Saved for later ;)
+
+            MicrosoftLoginWindow LogoutWindow = new MicrosoftLoginWindow();
+            LogoutWindow.Width = 500;
+            LogoutWindow.Height = 500;
+            LogoutWindow.Title = Title;
+            LogoutWindow.ShowLogoutDialog();
+
+            CraftyLauncher.LoggedIn = false;
+            Username.IsEnabled = true;
+            LoginLogout.Content = "Login";
         }
     }
 
-    private void DeleteAccountEvent(object sender, RoutedEventArgs e)
-    {
-        MicrosoftLoginWindow LogoutWindow = new MicrosoftLoginWindow();
-        LogoutWindow.Width = 500;
-        LogoutWindow.Height = 500;
-        LogoutWindow.Title = Title;
-        LogoutWindow.ShowLogoutDialog();
+    private void OnExit(object sender, CancelEventArgs e) { Environment.Exit(0); }
 
-        CraftyEssentials.LoggedIn = false;
-        Username.IsEnabled = true;
-        Login.IsEnabled = true;
-        Logout.IsEnabled = false;
+    private void UpdateVersionBox()
+    {
+        int SelectedIndex = VersionBox.SelectedIndex;
+        VersionBox.SelectedIndex = -1;
+        VersionBox.SelectedIndex = SelectedIndex;
+        VersionBox.Items.Refresh();
     }
 
-    private void OnExit(object sender, CancelEventArgs e)
-    {
-        Environment.Exit(0);
-    }
-
-    public void AddVersion(string version)
-    {
-        VersionList.Items.Add(version);
-    }
-
-    public async Task ChangeDownloadText(string s)
-    {
-        Dispatcher.Invoke(new Action(() => DownloadText.Text = s));
-    }
+    public async Task ChangeDownloadText(string s) { Dispatcher.Invoke(new Action(() => DownloadText.Text = s)); }
 }

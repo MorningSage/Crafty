@@ -10,19 +10,46 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using CmlLib.Core.Auth;
+using CmlLib.Core;
+using System.Collections.Generic;
 
 namespace Crafty;
 
-public static class CraftyEssentials
+public class Version
+{
+    public string name { get; set; }
+    public string id { get; set; }
+    public string installed { get; set; }
+
+    public Version(string Name, string Id)
+    {
+        name = Name;
+        id = Id;
+    }
+}
+
+public static class CraftyLauncher
 {
     public static string CraftyPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/.crafty";
     public static string JavaPath = $"{CraftyPath}/java";
-    public static string AllowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_1234567890";
-    private static string VersionManifest = "https://piston-meta.mojang.com/mc/game/version_manifest.json";
-    public static string LatestVersion = null;
-    private static int MaxTasks = 128;
+    public static MinecraftPath Path = new MinecraftPath(CraftyPath);
+    public static CMLauncher Launcher = new CMLauncher(Path);
+    public static List<Version> VersionList = new List<Version>();
+    public static List<Version> FabricVersionList = new List<Version>();
     public static bool LoggedIn = false;
     public static MSession Session = null;
+    public static MLaunchOption LauncherOptions = new MLaunchOption
+    {
+        MaximumRamMb = 2048,
+        Session = Session,
+    };
+}
+
+public static class CraftyEssentials
+{
+    public static string AllowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_1234567890";
+    private static string VersionManifest = "https://piston-meta.mojang.com/mc/game/version_manifest.json";
+    private static int MaxTasks = 128;
     private static DownloadConfiguration DownloadConfig = new DownloadConfiguration()
     {
         ChunkCount = 8,
@@ -73,21 +100,38 @@ public static class CraftyEssentials
 
             if (type == "release")
             {
-                MainWindow.Current.AddVersion(id);
+                CraftyLauncher.VersionList.Add(new Version(id, id));
                 Debug.WriteLine($"Added {id}");
+            }
+        }
 
-                if (LatestVersion == null)
-                {
-                    LatestVersion = id;
-                }
+        var OfficialVersions = CraftyLauncher.Launcher.GetAllVersions();
+        // var FabricVersions = new FabricVersionLoader().GetFabricLoaders();
+        // Saved for later ;)
+
+        foreach (var item in OfficialVersions)
+        {
+            if (item.IsLocalVersion && !CraftyLauncher.VersionList.Any(x => x.name == item.Name))
+            {
+                CraftyLauncher.VersionList.Add(new Version($"{item.Name} (Installed)", item.Name));
+                Debug.WriteLine($"Added already installed {item.Name}");
+            }
+
+            else if (item.IsLocalVersion && CraftyLauncher.VersionList.Any(x => x.name == item.Name))
+            {
+                var Index = CraftyLauncher.VersionList.FindIndex(x => x.name == item.Name);
+                var VersionToEdit = CraftyLauncher.VersionList.Find(x => x.name == item.Name);
+                VersionToEdit.name = $"{item.Name} (Installed)";
+                CraftyLauncher.VersionList[Index] = VersionToEdit;
+                Debug.WriteLine($"Changed status of {item.Name} to installed");
             }
         }
     }
 
     public static async Task DownloadVersion(string version)
     {
-        Directory.CreateDirectory($"{CraftyPath}/versions/{version}");
-        string Path = $"{CraftyPath}/versions/{version}/{version}.jar";
+        Directory.CreateDirectory($"{CraftyLauncher.CraftyPath}/versions/{version}");
+        string Path = $"{CraftyLauncher.CraftyPath}/versions/{version}/{version}.jar";
         if (File.Exists(Path)) { return; }
 
         WebClient Client = new WebClient();
@@ -100,6 +144,12 @@ public static class CraftyEssentials
                 var Downloader = new DownloadService(DownloadConfig);
                 await Downloader.DownloadFileTaskAsync(Item.Href, Path);
 
+                var Index = CraftyLauncher.VersionList.FindIndex(x => x.name == version);
+                var VersionToEdit = CraftyLauncher.VersionList.Find(x => x.name == version);
+                VersionToEdit.name = $"{version} (Installed)";
+                CraftyLauncher.VersionList[Index] = VersionToEdit;
+                Debug.WriteLine($"Changed status of {version} to installed");
+
                 return;
             }
         }
@@ -107,8 +157,8 @@ public static class CraftyEssentials
 
     public static async Task DownloadJson(string version)
     {
-        Directory.CreateDirectory($"{CraftyPath}/versions/{version}");
-        string Path = $"{CraftyPath}/versions/{version}/{version}.json";
+        Directory.CreateDirectory($"{CraftyLauncher.CraftyPath}/versions/{version}");
+        string Path = $"{CraftyLauncher.CraftyPath}/versions/{version}/{version}.json";
         if (File.Exists(Path)) { return; }
 
         WebClient Client = new WebClient();
@@ -128,9 +178,9 @@ public static class CraftyEssentials
 
     public static async Task DownloadJava()
     {
-        Directory.CreateDirectory($"{CraftyPath}/temp");
-        string TempPath = $"{CraftyPath}/temp/{RandomString(10)}.zip";
-        if (File.Exists($"{JavaPath}/bin/javaw.exe")) { return; }
+        Directory.CreateDirectory($"{CraftyLauncher.CraftyPath}/temp");
+        string TempPath = $"{CraftyLauncher.CraftyPath}/temp/{RandomString(10)}.zip";
+        if (File.Exists($"{CraftyLauncher.JavaPath}/bin/javaw.exe")) { return; }
 
         var Downloader = new DownloadService(DownloadConfig);
         await Downloader.DownloadFileTaskAsync("https://cdn.azul.com/zulu/bin/zulu19.30.11-ca-jre19.0.1-win_x64.zip", TempPath);
@@ -141,12 +191,12 @@ public static class CraftyEssentials
 
             using (ZipArchive Zip = ZipFile.Open(TempPath, ZipArchiveMode.Update))
             {
-                Zip.ExtractToDirectory($"{CraftyPath}/temp/");
+                Zip.ExtractToDirectory($"{CraftyLauncher.CraftyPath}/temp/");
                 JavaVersion = Zip.Entries.First().ToString();
             }
 
-            if (Directory.Exists(JavaPath)) { Directory.Delete(JavaPath); }
-            Directory.Move($"{CraftyPath}/temp/{JavaVersion}", JavaPath);
+            if (Directory.Exists(CraftyLauncher.JavaPath)) { Directory.Delete(CraftyLauncher.JavaPath); }
+            Directory.Move($"{CraftyLauncher.CraftyPath}/temp/{JavaVersion}", CraftyLauncher.JavaPath);
 
             await ClearTemp();
         });
@@ -154,7 +204,7 @@ public static class CraftyEssentials
 
     private static async Task ClearTemp()
     {
-        DirectoryInfo TempPath = new DirectoryInfo($"{CraftyPath}/temp");
+        DirectoryInfo TempPath = new DirectoryInfo($"{CraftyLauncher.CraftyPath}/temp");
 
         foreach (FileInfo File in TempPath.GetFiles())
         {
@@ -169,12 +219,12 @@ public static class CraftyEssentials
 
     public static async Task DownloadAssets(string version)
     {
-        Directory.CreateDirectory($"{CraftyPath}/assets/indexes");
-        Directory.CreateDirectory($"{CraftyPath}/assets/objects");
+        Directory.CreateDirectory($"{CraftyLauncher.CraftyPath}/assets/indexes");
+        Directory.CreateDirectory($"{CraftyLauncher.CraftyPath}/assets/objects");
 
         string JsonUrl = GetPackageUrl(version);
         string JsonId = GetPackageId(version);
-        string JsonPath = $"{CraftyPath}/assets/indexes/{JsonId}.json";
+        string JsonPath = $"{CraftyLauncher.CraftyPath}/assets/indexes/{JsonId}.json";
 
         if (!File.Exists(JsonPath)) {
             var IndexDownloader = new DownloadService(DownloadConfig);
@@ -183,6 +233,7 @@ public static class CraftyEssentials
 
         StreamReader Read = new StreamReader(JsonPath);
         var Json = JObject.Parse(Read.ReadToEnd()).Values();
+        Read.Close();
         var Assets = Json.Children().ToArray();
         int Remaining = Assets.Count();
         int Done = 0;
@@ -195,7 +246,7 @@ public static class CraftyEssentials
                 string Hash = (string)ObjectInfo["hash"];
                 int Size = (int)ObjectInfo["size"];
                 string ShortHash = Hash.Substring(0, 2);
-                string ObjectPath = $"{CraftyPath}/assets/objects/{ShortHash}";
+                string ObjectPath = $"{CraftyLauncher.CraftyPath}/assets/objects/{ShortHash}";
 
                 FileInfo HashFile = new FileInfo($"{ObjectPath}/{Hash}");
                 if (HashFile.Exists && HashFile.Length == Size) { Remaining--; }
@@ -212,7 +263,7 @@ public static class CraftyEssentials
                 string Hash = (string)ObjectInfo["hash"];
                 int Size = (int)ObjectInfo["size"];
                 string ShortHash = Hash.Substring(0, 2);
-                string ObjectPath = $"{CraftyPath}/assets/objects/{ShortHash}";
+                string ObjectPath = $"{CraftyLauncher.CraftyPath}/assets/objects/{ShortHash}";
                 string HashPath = $"{ObjectPath}/{Hash}";
                 string Url = $"http://resources.download.minecraft.net/{ShortHash}/{Hash}";
 
@@ -257,12 +308,13 @@ public static class CraftyEssentials
 
     public static async Task DownloadLibraries(string version)
     {
-        Directory.CreateDirectory($"{CraftyPath}/libraries");
+        Directory.CreateDirectory($"{CraftyLauncher.CraftyPath}/libraries");
 
-        string JsonPath = $"{CraftyPath}/versions/{version}/{version}.json";
+        string JsonPath = $"{CraftyLauncher.CraftyPath}/versions/{version}/{version}.json";
         StreamReader Read = new StreamReader(JsonPath);
         JsonTextReader Reader = new JsonTextReader(Read);
         JObject Json = (JObject)JToken.ReadFrom(Reader);
+        Read.Close();
         int Remaining = Json["libraries"].Count();
         int Done = 0;
         int Tasks = 0;
@@ -270,9 +322,7 @@ public static class CraftyEssentials
         foreach (var Object in Json["libraries"])
         {
             string LibraryPath = (string)Object["downloads"].SelectTokens("$..path").Last();
-            string LibraryFolderPath = Path.GetDirectoryName(LibraryPath);
             int Size = (int)Object["downloads"].SelectTokens("$..size").Last();
-            string Url = $"https://libraries.minecraft.net/{LibraryPath}";
 
             FileInfo LibraryFile = new FileInfo(LibraryPath);
             if (LibraryFile.Exists && LibraryFile.Length == Size) { Remaining--; }
@@ -328,7 +378,7 @@ public static class CraftyEssentials
 
     private static string GetPackageUrl(string version)
     {
-        string JsonPath = $"{CraftyPath}/versions/{version}/{version}.json";
+        string JsonPath = $"{CraftyLauncher.CraftyPath}/versions/{version}/{version}.json";
         StreamReader Read = new StreamReader(JsonPath);
         JsonTextReader Reader = new JsonTextReader(Read);
         JObject Json = (JObject)JToken.ReadFrom(Reader);
@@ -339,7 +389,7 @@ public static class CraftyEssentials
 
     private static string GetPackageId(string version)
     {
-        string JsonPath = $"{CraftyPath}/versions/{version}/{version}.json";
+        string JsonPath = $"{CraftyLauncher.CraftyPath}/versions/{version}/{version}.json";
         StreamReader Read = new StreamReader(JsonPath);
         JsonTextReader Reader = new JsonTextReader(Read);
         JObject Json = (JObject)JToken.ReadFrom(Reader);
