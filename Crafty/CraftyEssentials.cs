@@ -148,6 +148,7 @@ public static class CraftyEssentials
 
         foreach (LinkItem Item in LinkFinder.Find(Website))
         {
+            Debug.WriteLine(Item.Href);
             if (Item.Text == "Download Client Jar")
             {
                 var Downloader = new DownloadService(DownloadConfig);
