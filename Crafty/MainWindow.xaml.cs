@@ -111,21 +111,30 @@ public partial class MainWindow : Window
 
         if (Version.isOriginal)
         {
-            // DownloadText.Text = "Downloading Java";
-            // await CraftyEssentials.DownloadJava();
-            // Old versions crash on Java 19 - using Minecraft's default Java runtimes for now
+            try
+            {
+                // DownloadText.Text = "Downloading Java";
+                // await CraftyEssentials.DownloadJava();
+                // Old versions crash on Java 19 - using Minecraft's default Java runtimes for now
 
-            DownloadText.Text = $"Downloading {Version.id}.jar";
-            await CraftyEssentials.DownloadVersion(Version.id);
+                DownloadText.Text = $"Downloading {Version.id}.jar";
+                await CraftyEssentials.DownloadVersion(Version.id);
 
-            DownloadText.Text = $"Downloading {Version.id}.json";
-            await CraftyEssentials.DownloadJson(Version.id);
+                DownloadText.Text = $"Downloading {Version.id}.json";
+                await CraftyEssentials.DownloadJson(Version.id);
 
-            DownloadText.Text = "Fetching assets";
-            await CraftyEssentials.DownloadAssets(Version.id);
+                DownloadText.Text = "Fetching assets";
+                await CraftyEssentials.DownloadAssets(Version.id);
 
-            DownloadText.Text = "Fetching libraries";
-            await CraftyEssentials.DownloadLibraries(Version.id);
+                DownloadText.Text = "Fetching libraries";
+                await CraftyEssentials.DownloadLibraries(Version.id);
+            }
+
+            catch
+            {
+                DownloadText.Text = "Failed to download files while using efficient method - using normal method";
+                await CraftyLauncher.Launcher.CheckAndDownloadAsync(await CraftyLauncher.Launcher.GetVersionAsync(Version.id));
+            }
         }
 
         DownloadText.Text = $"Downloading missing files (this might take a while)";
