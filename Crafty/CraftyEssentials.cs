@@ -19,12 +19,14 @@ public class Version
 {
     public string name { get; set; }
     public string id { get; set; }
+    public string type { get; set; }
     public bool isOriginal { get; set; }
 
-    public Version(string Name, string Id, bool IsOriginal = false)
+    public Version(string Name, string Id, string Type, bool IsOriginal = false)
     {
         name = Name;
         id = Id;
+        type = Type;
         isOriginal = IsOriginal;
     }
 }
@@ -89,25 +91,25 @@ public static class CraftyEssentials
 
             if (type == "release")
             {
-                CraftyLauncher.VersionList.Add(new Version(id, id, true));
+                CraftyLauncher.VersionList.Add(new Version(id, id, type, true));
                 Debug.WriteLine($"Added {type} {id}");
             }
 
             else if (type == "snapshot" && CraftyLauncher.GetSnapshots)
             {
-                CraftyLauncher.VersionList.Add(new Version(id, id, true));
+                CraftyLauncher.VersionList.Add(new Version(id, id, type, true));
                 Debug.WriteLine($"Added {type} {id}");
             }
 
             else if (type == "old_beta" && CraftyLauncher.GetBetas)
             {
-                CraftyLauncher.VersionList.Add(new Version(id, id, true));
+                CraftyLauncher.VersionList.Add(new Version(id, id, type, true));
                 Debug.WriteLine($"Added {type} {id}");
             }
 
             else if (type == "old_alpha" && CraftyLauncher.GetAlphas)
             {
-                CraftyLauncher.VersionList.Add(new Version(id, id, true));
+                CraftyLauncher.VersionList.Add(new Version(id, id, type, true));
                 Debug.WriteLine($"Added {type} {id}");
             }
         }
@@ -120,7 +122,7 @@ public static class CraftyEssentials
         {
             if (item.IsLocalVersion && !CraftyLauncher.VersionList.Any(x => x.name == item.Name))
             {
-                CraftyLauncher.VersionList.Add(new Version($"{item.Name} (Installed)", item.Name));
+                CraftyLauncher.VersionList.Add(new Version($"{item.Name} (Installed)", item.Name, item.Type));
                 Debug.WriteLine($"Added already installed {item.Name}");
             }
 
@@ -146,6 +148,7 @@ public static class CraftyEssentials
 
         foreach (LinkItem Item in LinkFinder.Find(Website))
         {
+            Debug.WriteLine(Item.Href);
             if (Item.Text == "Download Client Jar")
             {
                 var Downloader = new DownloadService(DownloadConfig);
