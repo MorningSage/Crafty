@@ -38,12 +38,10 @@ public static class CraftyLauncher
     public static List<Version> VersionList = new List<Version>();
     public static List<Version> FabricVersionList = new List<Version>();
     public static bool LoggedIn = false;
-    public static MSession Session = null;
-    public static MLaunchOption LauncherOptions = new MLaunchOption
-    {
-        MaximumRamMb = 2048,
-        Session = Session,
-    };
+    public static MSession Session;
+    public static bool GetSnapshots = false;
+    public static bool GetBetas = false;
+    public static bool GetAlphas = false;
 }
 
 public static class CraftyEssentials
@@ -62,20 +60,11 @@ public static class CraftyEssentials
 
     private static Random random = new Random();
 
-    private static string RandomString(int length)
-    {
-        return new string(Enumerable.Repeat(AllowedChars, length)
-            .Select(s => s[random.Next(s.Length)]).ToArray());
-    }
+    private static string RandomString(int length) { return new string(Enumerable.Repeat(AllowedChars, length).Select(s => s[random.Next(s.Length)]).ToArray()); }
 
     public static bool CheckUsername(string username)
     {
-        foreach (char unvalid in username)
-        {
-            if (!AllowedChars.Contains(unvalid.ToString()))
-                return false;
-        }
-
+        foreach (char unvalid in username) { if (!AllowedChars.Contains(unvalid.ToString())) { return false; } }
         if (username.Length < 3 || username.Length > 16 || string.IsNullOrEmpty(username)) { return false; }
 
         return true;
@@ -83,6 +72,8 @@ public static class CraftyEssentials
 
     public static void GetVersions()
     {
+        CraftyLauncher.VersionList.Clear();
+
         var Client = new RestClient(VersionManifest);
         var Request = new RestRequest();
         var Response = Client.Execute(Request);
@@ -95,14 +86,29 @@ public static class CraftyEssentials
         {
             string id = (string)Version["id"];
             string type = (string)Version["type"];
-            string url = (string)Version["url"];
-            string time = (string)Version["time"];
-            string releaseTime = (string)Version["releaseTime"];
 
             if (type == "release")
             {
                 CraftyLauncher.VersionList.Add(new Version(id, id, true));
-                Debug.WriteLine($"Added {id}");
+                Debug.WriteLine($"Added {type} {id}");
+            }
+
+            else if (type == "snapshot" && CraftyLauncher.GetSnapshots)
+            {
+                CraftyLauncher.VersionList.Add(new Version(id, id, true));
+                Debug.WriteLine($"Added {type} {id}");
+            }
+
+            else if (type == "old_beta" && CraftyLauncher.GetBetas)
+            {
+                CraftyLauncher.VersionList.Add(new Version(id, id, true));
+                Debug.WriteLine($"Added {type} {id}");
+            }
+
+            else if (type == "old_alpha" && CraftyLauncher.GetAlphas)
+            {
+                CraftyLauncher.VersionList.Add(new Version(id, id, true));
+                Debug.WriteLine($"Added {type} {id}");
             }
         }
 
@@ -287,7 +293,7 @@ public static class CraftyEssentials
                     var Downloader = new DownloadService(DownloadConfig);
                     await Downloader.DownloadFileTaskAsync(Url, HashPath);
                     Done++;
-                    await MainWindow.Current.ChangeDownloadText($"Downloading assets ({Done}/{Remaining})");
+                    MainWindow.Current.ChangeDownloadText($"Downloading assets ({Done}/{Remaining})");
                     Tasks--;
                 };
 
@@ -314,7 +320,7 @@ public static class CraftyEssentials
 
         foreach (var Object in Json["libraries"])
         {
-            string LibraryPath = (string)Object["downloads"].SelectTokens("$..path").Last();
+            string LibraryPath = $"{CraftyLauncher.CraftyPath}/libraries/{Object["downloads"].SelectTokens("$..path").Last()}";
             int Size = (int)Object["downloads"].SelectTokens("$..size").Last();
 
             FileInfo LibraryFile = new FileInfo(LibraryPath);
@@ -326,7 +332,7 @@ public static class CraftyEssentials
             while (Tasks > MaxTasks) { await Task.Delay(1000); }
             Tasks++;
 
-            string LibraryPath = (string)Object["downloads"].SelectTokens("$..path").Last();
+            string LibraryPath = $"{CraftyLauncher.CraftyPath}/libraries/{Object["downloads"].SelectTokens("$..path").Last()}";
             string LibraryFolderPath = Path.GetDirectoryName(LibraryPath);
             int Size = (int)Object["downloads"].SelectTokens("$..size").Last();
             string Url = $"https://libraries.minecraft.net/{LibraryPath}";
@@ -358,7 +364,7 @@ public static class CraftyEssentials
                 var Downloader = new DownloadService(DownloadConfig);
                 await Downloader.DownloadFileTaskAsync(Url, LibraryPath);
                 Done++;
-                await MainWindow.Current.ChangeDownloadText($"Downloading libraries ({Done}/{Remaining})");
+                MainWindow.Current.ChangeDownloadText($"Downloading libraries ({Done}/{Remaining})");
                 Tasks--;
             };
 
@@ -389,5 +395,14 @@ public static class CraftyEssentials
         Read.Close();
 
         return (string)Json["assetIndex"]["id"];
+    }
+
+    public static int GetPhysicalMemory()
+    {
+        decimal InstalledMemory = GC.GetGCMemoryInfo().TotalAvailableMemoryBytes;
+        int PhysicalMemory = (int)Math.Round(InstalledMemory / 1048576);
+        Debug.WriteLine($"Physical Memory: {PhysicalMemory}MB");
+
+        return PhysicalMemory;
     }
 }
