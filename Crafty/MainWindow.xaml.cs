@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,6 +25,7 @@ public partial class MainWindow : Window
     {
         Current = this;
         InitializeComponent();
+        CraftyLauncher.AutoLogin();
         CraftyEssentials.GetVersions();
         RamSlider.Minimum = 2048;
         RamSlider.Maximum = PhysicalMemory;
@@ -39,13 +41,18 @@ public partial class MainWindow : Window
     {
         if (!CraftyLauncher.LoggedIn)
         {
-            MicrosoftLoginWindow LoginWindow = new MicrosoftLoginWindow();
-            LoginWindow.Width = 500;
-            LoginWindow.Height = 500;
-            LoginWindow.Title = Title;
-
             try
             {
+                MicrosoftLoginWindow LoginWindow = new(CraftyLauncher.CraftyLogin)
+                {
+                    Width = 500,
+                    MinWidth = 500,
+                    MaxWidth = 500,
+                    Height = 500,
+                    MinHeight = 500,
+                    MaxHeight = 500,
+                    Title = Title
+                };
                 MSession LoginSession = await LoginWindow.ShowLoginDialog();
 
                 CraftyLauncher.Session = LoginSession;
@@ -60,17 +67,12 @@ public partial class MainWindow : Window
                 return;
             }
         }
-
+        
         else
         {
-            // LoginHandler CraftyLogin = new LoginHandler();
-            // Saved for later ;)
-
-            MicrosoftLoginWindow LogoutWindow = new MicrosoftLoginWindow();
-            LogoutWindow.Width = 500;
-            LogoutWindow.Height = 500;
-            LogoutWindow.Title = Title;
-            LogoutWindow.ShowLogoutDialog();
+            CraftyLauncher.CraftyLogin.ClearCache();
+            File.Delete($"{CraftyLauncher.CraftyPath}/crafty_session.json");
+            File.Delete($"{Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)}/Crafty.exe.WebView2/EBWebView/Local State");
 
             CraftyLauncher.LoggedIn = false;
             Username.IsEnabled = true;

@@ -12,6 +12,8 @@ using System.Threading.Tasks;
 using CmlLib.Core.Auth;
 using CmlLib.Core;
 using System.Collections.Generic;
+using CmlLib.Core.Auth.Microsoft;
+using CmlLib.Core.Auth.Microsoft.Cache;
 
 namespace Crafty;
 
@@ -31,19 +33,32 @@ public class Version
     }
 }
 
-public static class CraftyLauncher
+public class CraftyLauncher
 {
     public static string CraftyPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/.crafty";
     public static string JavaPath = $"{CraftyPath}/java";
-    public static MinecraftPath Path = new MinecraftPath(CraftyPath);
-    public static CMLauncher Launcher = new CMLauncher(Path);
-    public static List<Version> VersionList = new List<Version>();
-    public static List<Version> FabricVersionList = new List<Version>();
+    public static CMLauncher Launcher = new(new MinecraftPath(CraftyPath));
+    public static List<Version> VersionList = new();
+    public static List<Version> FabricVersionList = new();
     public static bool LoggedIn = false;
     public static MSession Session;
     public static bool GetSnapshots = false;
     public static bool GetBetas = false;
     public static bool GetAlphas = false;
+    public static LoginHandler CraftyLogin = new(x => x.CacheManager = new(new JsonFileCacheManager<SessionCache>($"{CraftyPath}/crafty_session.json")));
+
+    public static void AutoLogin()
+    {
+        if (File.Exists($"{CraftyPath}/crafty_session.json")
+            && File.Exists($"{Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)}/Crafty.exe.WebView2/EBWebView/Local State"))
+        {
+            Session = CraftyLogin.LoginFromCache().Result;
+            LoggedIn = true;
+            MainWindow.Current.Username.IsEnabled = false;
+            MainWindow.Current.Username.Text = Session.Username;
+            MainWindow.Current.LoginLogout.Content = "Logout";
+        }
+    }
 }
 
 public static class CraftyEssentials
@@ -51,7 +66,7 @@ public static class CraftyEssentials
     public static string AllowedChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_1234567890";
     private static string VersionManifest = "https://piston-meta.mojang.com/mc/game/version_manifest.json";
     private static int MaxTasks = 128;
-    private static DownloadConfiguration DownloadConfig = new DownloadConfiguration()
+    private static DownloadConfiguration DownloadConfig = new()
     {
         ChunkCount = 8,
         MaxTryAgainOnFailover = 5,
@@ -60,7 +75,7 @@ public static class CraftyEssentials
         Timeout = 1000,
     };
 
-    private static Random random = new Random();
+    private static Random random = new();
 
     private static string RandomString(int length) { return new string(Enumerable.Repeat(AllowedChars, length).Select(s => s[random.Next(s.Length)]).ToArray()); }
 
