@@ -71,12 +71,20 @@ public partial class MainWindow : Window
         else
         {
             CraftyLauncher.CraftyLogin.ClearCache();
-            File.Delete($"{CraftyLauncher.CraftyPath}/crafty_session.json");
-            File.Delete($"{Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)}/Crafty.exe.WebView2/EBWebView/Local State");
+            try
+            {
+                File.Delete($"{CraftyLauncher.CraftyPath}/crafty_session.json");
+                File.Delete($"{Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)}/Crafty.exe.WebView2/EBWebView/Local State");
 
-            CraftyLauncher.LoggedIn = false;
-            Username.IsEnabled = true;
-            LoginLogout.Content = "Login";
+                CraftyLauncher.LoggedIn = false;
+                Username.IsEnabled = true;
+                LoginLogout.Content = "Login";
+            }
+
+            catch
+            {
+                Debug.WriteLine("Couldn't logout!");
+            }
         }
     }
 

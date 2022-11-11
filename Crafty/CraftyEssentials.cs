@@ -49,8 +49,7 @@ public class CraftyLauncher
 
     public static void AutoLogin()
     {
-        if (File.Exists($"{CraftyPath}/crafty_session.json")
-            && File.Exists($"{Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)}/Crafty.exe.WebView2/EBWebView/Local State"))
+        if (File.Exists($"{Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)}/Crafty.exe.WebView2/EBWebView/Local State"))
         {
             Session = CraftyLogin.LoginFromCache().Result;
             LoggedIn = true;
