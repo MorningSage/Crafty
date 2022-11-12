@@ -76,7 +76,7 @@
                     Foreground="White"
                     ItemsSource="{Binding}">
                     <ComboBox.ItemTemplate>
-                        <DataTemplate DataType="local:Version">
+                        <DataTemplate DataType="local:CraftyVersion">
                             <TextBlock Text="{Binding name}" />
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
