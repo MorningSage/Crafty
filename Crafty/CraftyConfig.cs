@@ -5,10 +5,10 @@ namespace Crafty;
 
 public static class CraftyConfig
 {
-    public static void writeFile(string username, int ram)
+    public static void writeFile(string username, double ram)
     {
         data.username = username;
-        data.ram = ram;
+        data.ram = (int)ram;
 
         var json = JsonConvert.SerializeObject(data);
         File.WriteAllTextAsync(CraftyLauncher.CraftyPath + "/config.json", json);

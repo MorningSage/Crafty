@@ -95,7 +95,7 @@ public partial class MainWindow : Window
             return;
         }
         
-        CraftyConfig.writeFile(Username.Text, (int)RamSlider.Value);
+        CraftyConfig.writeFile(Username.Text, RamSlider.Value);
 
         if (!CraftyLauncher.LoggedIn) { CraftyLauncher.Session = MSession.GetOfflineSession(Username.Text); }
 
