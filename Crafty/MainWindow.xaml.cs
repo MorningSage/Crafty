@@ -18,8 +18,8 @@ public partial class MainWindow : Window
 {
     public static MainWindow Current;
 
-    private List<Version> VersionList { get { return CraftyLauncher.VersionList; } }
-    private List<Version> FabricVersionList { get { return CraftyLauncher.FabricVersionList; } }
+    private List<CraftyVersion> VersionList { get { return CraftyLauncher.VersionList; } }
+    private List<CraftyVersion> FabricVersionList { get { return CraftyLauncher.FabricVersionList; } }
     private int PhysicalMemory = CraftyEssentials.GetPhysicalMemory();
   
 
