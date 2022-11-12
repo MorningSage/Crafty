@@ -70,14 +70,9 @@ public partial class MainWindow : Window
         
         else
         {
-            try
-            {
-                CraftyLauncher.CraftyLogin.ClearCache();
-                File.Delete($"{CraftyLauncher.CraftyPath}/crafty_session.json");
-                File.Delete($"{Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)}/Crafty.exe.WebView2/EBWebView/Local State");
-            }
-
-            catch { Debug.WriteLine("Couldn't clear cache / tokens!"); }
+            try { CraftyLauncher.CraftyLogin.ClearCache(); } catch { Debug.WriteLine("Couldn't clear cache!"); }
+            try { File.Delete($"{CraftyLauncher.CraftyPath}/crafty_session.json"); } catch { Debug.WriteLine("Couldn't delete cache file!"); }
+            try { File.Delete($"{Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)}/Crafty.exe.WebView2/EBWebView/Local State"); } catch { Debug.WriteLine("Couldn't delete token file!"); }
 
             CraftyLauncher.LoggedIn = false;
             Username.IsEnabled = true;
