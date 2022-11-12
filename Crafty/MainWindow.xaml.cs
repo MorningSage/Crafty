@@ -21,8 +21,7 @@ public partial class MainWindow : Window
     private List<CraftyVersion> VersionList { get { return CraftyLauncher.VersionList; } }
     private List<CraftyVersion> FabricVersionList { get { return CraftyLauncher.FabricVersionList; } }
     private int PhysicalMemory = CraftyEssentials.GetPhysicalMemory();
-  
-
+    
     public MainWindow()
     {
         Current = this;
@@ -105,7 +104,7 @@ public partial class MainWindow : Window
             Session = CraftyLauncher.Session,
         };
 
-        Version Version = (Version)VersionBox.SelectedItem;
+        CraftyVersion Version = (CraftyVersion)VersionBox.SelectedItem;
 
         if (!CraftyLauncher.VersionList.Contains(Version))
         {
