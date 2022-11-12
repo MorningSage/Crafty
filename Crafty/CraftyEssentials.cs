@@ -9,58 +9,8 @@ using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using CmlLib.Core.Auth;
-using CmlLib.Core;
-using System.Collections.Generic;
-using CmlLib.Core.Auth.Microsoft;
-using CmlLib.Core.Auth.Microsoft.Cache;
 
 namespace Crafty;
-
-public class Version
-{
-    public string name { get; set; }
-    public string id { get; set; }
-    public string type { get; set; }
-    public bool isOriginal { get; set; }
-
-    public Version(string Name, string Id, string Type, bool IsOriginal = false)
-    {
-        name = Name;
-        id = Id;
-        type = Type;
-        isOriginal = IsOriginal;
-    }
-}
-
-public class CraftyLauncher
-{
-    public static string CraftyPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/.crafty";
-    public static string JavaPath = $"{CraftyPath}/java";
-    public static CMLauncher Launcher = new(new MinecraftPath(CraftyPath));
-    public static List<Version> VersionList = new();
-    public static List<Version> FabricVersionList = new();
-    public static bool LoggedIn = false;
-    public static MSession Session;
-    public static bool GetSnapshots = false;
-    public static bool GetBetas = false;
-    public static bool GetAlphas = false;
-    public static LoginHandler CraftyLogin = new(x => x.CacheManager = new(new JsonFileCacheManager<SessionCache>($"{CraftyPath}/crafty_session.json")));
-
-    public static void AutoLogin()
-    {
-        try
-        {
-            Session = CraftyLogin.LoginFromCache().Result;
-            LoggedIn = true;
-            MainWindow.Current.Username.IsEnabled = false;
-            MainWindow.Current.Username.Text = Session.Username;
-            MainWindow.Current.LoginLogout.Content = "Logout";
-        }
-
-        catch { Debug.WriteLine("Couldn't auto login!"); }
-    }
-}
 
 public static class CraftyEssentials
 {
@@ -107,25 +57,25 @@ public static class CraftyEssentials
 
             if (type == "release")
             {
-                CraftyLauncher.VersionList.Add(new Version(id, id, type, true));
+                CraftyLauncher.VersionList.Add(new CraftyVersion(id, id, type, true));
                 Debug.WriteLine($"Added {type} {id}");
             }
 
             else if (type == "snapshot" && CraftyLauncher.GetSnapshots)
             {
-                CraftyLauncher.VersionList.Add(new Version(id, id, type, true));
+                CraftyLauncher.VersionList.Add(new CraftyVersion(id, id, type, true));
                 Debug.WriteLine($"Added {type} {id}");
             }
 
             else if (type == "old_beta" && CraftyLauncher.GetBetas)
             {
-                CraftyLauncher.VersionList.Add(new Version(id, id, type, true));
+                CraftyLauncher.VersionList.Add(new CraftyVersion(id, id, type, true));
                 Debug.WriteLine($"Added {type} {id}");
             }
 
             else if (type == "old_alpha" && CraftyLauncher.GetAlphas)
             {
-                CraftyLauncher.VersionList.Add(new Version(id, id, type, true));
+                CraftyLauncher.VersionList.Add(new CraftyVersion(id, id, type, true));
                 Debug.WriteLine($"Added {type} {id}");
             }
         }
@@ -138,7 +88,7 @@ public static class CraftyEssentials
         {
             if (item.IsLocalVersion && !CraftyLauncher.VersionList.Any(x => x.name == item.Name))
             {
-                CraftyLauncher.VersionList.Add(new Version($"{item.Name} (Installed)", item.Name, item.Type));
+                CraftyLauncher.VersionList.Add(new CraftyVersion($"{item.Name} (Installed)", item.Name, item.Type));
                 Debug.WriteLine($"Added already installed {item.Name}");
             }
 
