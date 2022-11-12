@@ -49,7 +49,7 @@ public class CraftyLauncher
 
     public static void AutoLogin()
     {
-        if (File.Exists($"{Path.GetDirectoryName(System.Reflection.Assembly.GetExecutingAssembly().Location)}/Crafty.exe.WebView2/EBWebView/Local State"))
+        try
         {
             Session = CraftyLogin.LoginFromCache().Result;
             LoggedIn = true;
@@ -57,6 +57,8 @@ public class CraftyLauncher
             MainWindow.Current.Username.Text = Session.Username;
             MainWindow.Current.LoginLogout.Content = "Logout";
         }
+
+        catch { Debug.WriteLine("Couldn't auto login!"); }
     }
 }
 
