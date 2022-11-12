@@ -6,13 +6,14 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using CmlLib.Core;
 using CmlLib.Core.Auth;
 using CmlLib.Core.Auth.Microsoft;
 using CmlLib.Core.Auth.Microsoft.UI.Wpf;
 
 namespace Crafty;
-
+ 
 public partial class MainWindow : Window
 {
     public static MainWindow Current;
@@ -20,17 +21,23 @@ public partial class MainWindow : Window
     private List<Version> VersionList { get { return CraftyLauncher.VersionList; } }
     private List<Version> FabricVersionList { get { return CraftyLauncher.FabricVersionList; } }
     private int PhysicalMemory = CraftyEssentials.GetPhysicalMemory();
+  
 
     public MainWindow()
     {
         Current = this;
         InitializeComponent();
-        CraftyLauncher.AutoLogin();
-        CraftyEssentials.GetVersions();
+
+        CraftyConfig.loadFile();
         RamSlider.Minimum = 2048;
         RamSlider.Maximum = PhysicalMemory;
         RamSlider.TickFrequency = 2048;
-        RamSlider.Value = 2048;
+        RamSlider.Value = CraftyConfig.loadRamFromJson();
+        Username.Text = CraftyConfig.loadUsernameFromJson();
+
+        CraftyLauncher.AutoLogin();
+        CraftyEssentials.GetVersions();
+
         VersionBox.ItemsSource = VersionList;
         VersionBox.SelectedItem = VersionList.First();
     }
@@ -67,7 +74,7 @@ public partial class MainWindow : Window
                 return;
             }
         }
-        
+
         else
         {
             try { CraftyLauncher.CraftyLogin.ClearCache(); } catch { Debug.WriteLine("Couldn't clear cache!"); }
@@ -88,6 +95,8 @@ public partial class MainWindow : Window
             return;
         }
         
+        CraftyConfig.writeFile(Username.Text, RamSlider.Value);
+
         if (!CraftyLauncher.LoggedIn) { CraftyLauncher.Session = MSession.GetOfflineSession(Username.Text); }
 
         MLaunchOption LauncherOptions = new MLaunchOption
