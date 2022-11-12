@@ -40,7 +40,6 @@ public partial class MainWindow : Window
 
         VersionBox.ItemsSource = VersionList;
         VersionBox.SelectedItem = VersionList.First();
-
     }
 
     private void OnExit(object sender, CancelEventArgs e) { Environment.Exit(0); }
@@ -75,7 +74,7 @@ public partial class MainWindow : Window
                 return;
             }
         }
-        
+
         else
         {
             try { CraftyLauncher.CraftyLogin.ClearCache(); } catch { Debug.WriteLine("Couldn't clear cache!"); }
@@ -96,6 +95,8 @@ public partial class MainWindow : Window
             return;
         }
         
+        CraftyConfig.writeFile(Username.Text, (int)RamSlider.Value);
+
         if (!CraftyLauncher.LoggedIn) { CraftyLauncher.Session = MSession.GetOfflineSession(Username.Text); }
 
         MLaunchOption LauncherOptions = new MLaunchOption
