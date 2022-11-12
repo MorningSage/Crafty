@@ -29,16 +29,18 @@ public partial class MainWindow : Window
         InitializeComponent();
 
         CraftyConfig.loadFile();
-        CraftyLauncher.AutoLogin();
-        CraftyEssentials.GetVersions();
-
         RamSlider.Minimum = 2048;
         RamSlider.Maximum = PhysicalMemory;
         RamSlider.TickFrequency = 2048;
         RamSlider.Value = CraftyConfig.loadRamFromJson();
+        Username.Text = CraftyConfig.loadUsernameFromJson();
+
+        CraftyLauncher.AutoLogin();
+        CraftyEssentials.GetVersions();
+
         VersionBox.ItemsSource = VersionList;
         VersionBox.SelectedItem = VersionList.First();
-        Username.Text = CraftyConfig.loadUsernameFromJson();
+
     }
 
     private void OnExit(object sender, CancelEventArgs e) { Environment.Exit(0); }
