@@ -162,23 +162,25 @@
                     Grid.Column="0"
                     Margin="10,10,5,10"
                     HorizontalAlignment="Stretch"
-                    Click="CloseClicked">
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="Close" />
+                    VerticalAlignment="Center"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Click="CloseClicked"
+                    FontSize="24">
+                    Close
                 </Button>
 
                 <Button
                     Grid.Column="1"
                     Margin="5,10,10,10"
                     HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
                     Background="#3b963b"
-                    Click="SaveClicked">
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="Save" />
+                    Click="SaveClicked"
+                    FontSize="24">
+                    Save
                 </Button>
             </Grid>
         </Grid>

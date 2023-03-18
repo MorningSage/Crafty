@@ -70,11 +70,10 @@
                     Grid.Column="1"
                     VerticalAlignment="Center"
                     Orientation="Vertical">
-                    <TextBlock Margin="10,5" Text="Username" />
-
                     <TextBox
                         Name="Username"
                         Margin="10,5"
+                        FontSize="24"
                         IsEnabled="False"
                         Watermark="Username" />
 
@@ -82,12 +81,13 @@
                         Name="Logout"
                         Margin="10,5"
                         HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
                         Background="#8a1a1a"
-                        Click="LogoutClicked">
-                        <TextBlock
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Text="Logout" />
+                        Click="LogoutClicked"
+                        FontSize="24">
+                        Logout
                     </Button>
                 </StackPanel>
             </Grid>
@@ -98,13 +98,14 @@
                 <Button
                     Name="Close"
                     Grid.Column="0"
-                    Margin="10,10,5,10"
+                    Margin="10"
                     HorizontalAlignment="Stretch"
-                    Click="CloseClicked">
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        Text="Close" />
+                    VerticalAlignment="Center"
+                    HorizontalContentAlignment="Center"
+                    VerticalContentAlignment="Center"
+                    Click="CloseClicked"
+                    FontSize="24">
+                    Close
                 </Button>
             </Grid>
         </Grid>
