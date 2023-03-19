@@ -43,7 +43,10 @@ namespace Crafty.Views
 
 			if (!Launcher.CheckUsername(Username.Text)) return;
 
-			MLaunchOption launcherOptions = new MLaunchOption { MaximumRamMb = ConfigManager.Config.Ram, Session = MSession.GetOfflineSession(Username.Text) };
+			MLaunchOption launcherOptions = new() { MaximumRamMb = ConfigManager.Config.Ram };
+
+			if (Launcher.IsLoggedIn) launcherOptions.Session = Launcher.Session;
+			else launcherOptions.Session = MSession.GetOfflineSession(Username.Text);
 
 			ConfigManager.Config.Username = Username.Text;
 			ConfigManager.Config.LastVersionUsed = selectedVersion.Id;
