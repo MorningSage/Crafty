@@ -33,7 +33,7 @@
                 Background="#141414"
                 CornerRadius="0"
                 FontSize="24"
-                Foreground="Green"
+                Foreground="#3b963b"
                 Maximum="{Binding ProgressBarMaximum}"
                 ProgressTextFormat="{Binding ProgressBarText}"
                 ShowProgressText="True"

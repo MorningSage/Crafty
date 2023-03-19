@@ -25,7 +25,9 @@ namespace Crafty.Views
 
 		private async void Login()
 		{
-			await Launcher.Login();
+			bool results = await Launcher.Login();
+
+			if (!results) return;
 
 			Username.Text = Launcher.Session.Username;
 			Skin.Source = Launcher.Skin;

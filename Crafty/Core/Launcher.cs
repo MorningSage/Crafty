@@ -7,8 +7,8 @@ using System.IO;
 using System.Net;
 using System.Threading.Tasks;
 using Avalonia.Collections;
-using Avalonia.Controls;
 using Avalonia.Media.Imaging;
+using CmlLib.Core.VersionLoader;
 using Crafty.Managers;
 using Version = Crafty.Models.Version;
 
@@ -18,28 +18,30 @@ public static class Launcher
 {
 	public static readonly string MinecraftPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/.crafty";
 	public static CMLauncher CmLauncher = new(new MinecraftPath(MinecraftPath));
+	public static LocalVersionLoader LocalVersionLoader = new(CmLauncher.MinecraftPath);
 	public static AvaloniaList<Version> VersionList = VersionManager.GetVersions();
-	public static MSession Session;
-	public static JavaEditionLoginHandler LoginHandler;
+	public static MSession? Session;
+	public static JavaEditionLoginHandler? LoginHandler;
     public static bool IsLoggedIn;
     public static Bitmap? Skin;
 
     public static readonly string AllowedUsernameChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz_1234567890";
     public static int PhysicalMemory = GetPhysicalMemory();
 
-    public static async Task Login()
+    public static async Task<bool> Login()
     {
 	    if (!IsLoggedIn)
 	    {
 		    var session = await MsalClientManager.Login();
 
-		    if (session.CheckIsValid())
-		    {
-			    Session = session;
-			    IsLoggedIn = true;
-			    DownloadSkin($"https://crafatar.com/renders/body/{Session.UUID}");
-		    }
+		    if (session == null) return false;
+
+		    Session = session;
+		    IsLoggedIn = true;
+		    DownloadSkin($"https://crafatar.com/renders/body/{Session.UUID}");
 	    }
+
+	    return true;
 	}
 
     public static async Task Logout()

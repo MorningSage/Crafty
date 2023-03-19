@@ -17,14 +17,20 @@ namespace Crafty.ViewModels
 	{
 		public MainWindowViewModel()
 		{
-			if (File.Exists($"{Launcher.MinecraftPath}/crafty_session.json"))
+			try
 			{
-				var loginTask = Task.Run(Launcher.Login);
-				loginTask.Wait();
-				Username = Launcher.Session.Username;
+				if (File.Exists($"{Launcher.MinecraftPath}/crafty_session.json"))
+				{
+					var loginTask = Task.Run(Launcher.Login);
+					loginTask.Wait();
+					Username = Launcher.Session.Username;
+				}
+
+				else throw new Exception("Couldn't find session file");
 			}
 
-			else Username = ConfigManager.Config.Username;
+			catch { Username = ConfigManager.Config.Username; }
+
 
 			ShowSettings = new Interaction<SettingsViewModel, MainWindowViewModel?>();
 
@@ -48,30 +54,35 @@ namespace Crafty.ViewModels
 				IsLoggedIn = Launcher.IsLoggedIn;
 			});
 
-			Launcher.CmLauncher.FileChanged += e =>
+			try
 			{
-				switch (e.FileType)
+				Launcher.CmLauncher.FileChanged += e =>
 				{
-					case MFile.Library:
-						ProgressBarText = $"Preparing libraries... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
-						break;
-					case MFile.Minecraft:
-						ProgressBarText = $"Preparing Minecraft... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
-						break;
-					case MFile.Resource:
-						ProgressBarText = $"Preparing resources... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
-						break;
-					case MFile.Runtime:
-						ProgressBarText = $"Preparing Java... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
-						break;
-					case MFile.Others:
-						ProgressBarText = $"Preparing other files... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
-						break;
-				}
+					switch (e.FileType)
+					{
+						case MFile.Library:
+							ProgressBarText = $"Preparing libraries... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
+							break;
+						case MFile.Minecraft:
+							ProgressBarText = $"Preparing Minecraft... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
+							break;
+						case MFile.Resource:
+							ProgressBarText = $"Preparing resources... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
+							break;
+						case MFile.Runtime:
+							ProgressBarText = $"Preparing Java... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
+							break;
+						case MFile.Others:
+							ProgressBarText = $"Preparing other files... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
+							break;
+					}
 
-				ProgressBarMaximum = e.TotalFileCount;
-				ProgressBarValue = e.ProgressedFileCount;
-			};
+					ProgressBarMaximum = e.TotalFileCount;
+					ProgressBarValue = e.ProgressedFileCount;
+				};
+			}
+
+			catch { }
 		}
 
 		private string _progressBarText;

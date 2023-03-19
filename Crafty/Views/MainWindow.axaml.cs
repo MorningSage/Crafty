@@ -4,9 +4,11 @@ using CmlLib.Core;
 using Crafty.Core;
 using Crafty.Managers;
 using System.Threading.Tasks;
+using Avalonia.Media;
 using CmlLib.Core.Auth;
 using Version = Crafty.Models.Version;
 using Avalonia.ReactiveUI;
+using CmlLib.Core.Version;
 using Crafty.ViewModels;
 using ReactiveUI;
 
@@ -24,7 +26,8 @@ namespace Crafty.Views
 			this.WhenActivated(d => d(ViewModel!.ShowAccount.RegisterHandler(ShowAccountAsync)));
 
 			Cover.Source = RandomManager.RandomCover();
-			VersionList.SelectedItem = Launcher.VersionList.Where(x => x.Id == ConfigManager.Config.LastVersionUsed).First();
+			try { VersionList.SelectedItem = Launcher.VersionList.Where(x => x.Id == ConfigManager.Config.LastVersionUsed).First(); }
+			catch { VersionList.SelectedItem = null; }
 		}
 
 		private async void PlayClicked(object? sender, RoutedEventArgs e)
@@ -36,30 +39,49 @@ namespace Crafty.Views
 			PlayButton.IsEnabled = false;
 
 			Version selectedVersion = (Version)VersionList.SelectedItem;
-			await Launcher.CmLauncher.CheckAndDownloadAsync(await Launcher.CmLauncher.GetVersionAsync(selectedVersion.Id));
-			VersionManager.UpdateVersion(selectedVersion);
+			try
+			{
+				try
+				{
+					await Launcher.CmLauncher.CheckAndDownloadAsync(await Launcher.CmLauncher.GetVersionAsync(selectedVersion.Id));
+					VersionManager.UpdateVersion(selectedVersion);
+				}
 
-			ProgressBar.ProgressTextFormat = "Done!";
+				catch { }
 
-			if (!Launcher.CheckUsername(Username.Text)) return;
+				ProgressBar.Maximum = 1;
+				ProgressBar.Value = 1;
+				ProgressBar.ProgressTextFormat = "Launching...";
 
-			MLaunchOption launcherOptions = new() { MaximumRamMb = ConfigManager.Config.Ram };
+				if (!Launcher.CheckUsername(Username.Text)) return;
 
-			if (Launcher.IsLoggedIn) launcherOptions.Session = Launcher.Session;
-			else launcherOptions.Session = MSession.GetOfflineSession(Username.Text);
+				MVersion startVersion = VersionManager.MVersionList.GetVersion(selectedVersion.Id);
+				MLaunchOption launchOptions = new() { Path = Launcher.CmLauncher.MinecraftPath, StartVersion = startVersion, ServerPort = 25565, ScreenWidth = 856, ScreenHeight = 482, MaximumRamMb = ConfigManager.Config.Ram };
+				if (Launcher.IsLoggedIn) launchOptions.Session = Launcher.Session;
+				else launchOptions.Session = MSession.GetOfflineSession(Username.Text);
 
-			ConfigManager.Config.Username = Username.Text;
-			ConfigManager.Config.LastVersionUsed = selectedVersion.Id;
-			ConfigManager.SaveConfig();
+				ConfigManager.Config.Username = Username.Text;
+				ConfigManager.Config.LastVersionUsed = selectedVersion.Id;
+				ConfigManager.SaveConfig();
 
-			var minecraft = await Launcher.CmLauncher.CreateProcessAsync(selectedVersion.Id, launcherOptions, false);
-			minecraft.Start();
+				var minecraft = await Launcher.CmLauncher.CreateProcessAsync(launchOptions);
+				minecraft.Start();
+
+				ProgressBar.ProgressTextFormat = "Done!";
+			}
+
+			catch
+			{
+				ProgressBar.Background = Brush.Parse("#8a1a1a");
+				ProgressBar.ProgressTextFormat = $"Couldn't launch {selectedVersion.Id}!";
+			}
 
 			await Task.Delay(3000);
 
 			if (!Launcher.IsLoggedIn) Username.IsEnabled = true;
 			VersionList.IsEnabled = true;
 			PlayButton.IsEnabled = true;
+			ProgressBar.Background = Brush.Parse("#141414");
 			ProgressBar.ProgressTextFormat = "";
 			ProgressBar.Value = 0;
 		}
