@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:Crafty.ViewModels"
-    Title="Crafty"
+    Title="{Binding Title}"
     Width="800"
     Height="500"
     MinWidth="800"
@@ -50,6 +50,7 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
@@ -80,9 +81,22 @@
                         Stretch="UniformToFill" />
                 </Button>
 
+                <Button
+                    Grid.Column="2"
+                    Margin="0,10,10,10"
+                    VerticalAlignment="Stretch"
+                    Background="#141414"
+                    Command="{Binding OpenAboutCommand}"
+                    CornerRadius="4">
+                    <Image
+                        Height="32"
+                        Source="/Assets/about.png"
+                        Stretch="UniformToFill" />
+                </Button>
+
                 <TextBox
                     Name="Username"
-                    Grid.Column="2"
+                    Grid.Column="3"
                     Width="200"
                     Margin="0,10,10,10"
                     VerticalAlignment="Stretch"
@@ -94,7 +108,7 @@
 
                 <ComboBox
                     Name="VersionList"
-                    Grid.Column="3"
+                    Grid.Column="4"
                     Width="200"
                     Margin="0,10,10,10"
                     VerticalAlignment="Stretch"
@@ -111,8 +125,8 @@
 
                 <Button
                     Name="PlayButton"
-                    Grid.Column="5"
-                    Width="150"
+                    Grid.Column="6"
+                    Width="100"
                     Margin="10"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Center"

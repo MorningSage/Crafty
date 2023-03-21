@@ -18,12 +18,11 @@ namespace Crafty.Views
 	{
 		public MainWindow()
 		{
-			System.Net.ServicePointManager.DefaultConnectionLimit = 512;
-
 			InitializeComponent();
 
 			this.WhenActivated(d => d(ViewModel!.ShowSettings.RegisterHandler(ShowSettingsAsync)));
 			this.WhenActivated(d => d(ViewModel!.ShowAccount.RegisterHandler(ShowAccountAsync)));
+			this.WhenActivated(d => d(ViewModel!.ShowAbout.RegisterHandler(ShowAboutAsync)));
 
 			Cover.Source = RandomManager.RandomCover();
 			try { VersionList.SelectedItem = Launcher.VersionList.Where(x => x.Id == ConfigManager.Config.LastVersionUsed).First(); }
@@ -86,16 +85,23 @@ namespace Crafty.Views
 			ProgressBar.Value = 0;
 		}
 
-		private async Task ShowSettingsAsync(InteractionContext<SettingsViewModel, MainWindowViewModel?> interaction)
+		private async Task ShowSettingsAsync(InteractionContext<SettingsWindowViewModel, MainWindowViewModel?> interaction)
 		{
 			var dialog = new SettingsWindow { DataContext = interaction.Input };
 			var result = await dialog.ShowDialog<MainWindowViewModel?>(this);
 			interaction.SetOutput(result);
 		}
 
-		private async Task ShowAccountAsync(InteractionContext<AccountViewModel, MainWindowViewModel?> interaction)
+		private async Task ShowAccountAsync(InteractionContext<AccountWindowViewModel, MainWindowViewModel?> interaction)
 		{
 			var dialog = new AccountWindow { DataContext = interaction.Input };
+			var result = await dialog.ShowDialog<MainWindowViewModel?>(this);
+			interaction.SetOutput(result);
+		}
+
+		private async Task ShowAboutAsync(InteractionContext<AboutWindowViewModel, MainWindowViewModel?> interaction)
+		{
+			var dialog = new AboutWindow { DataContext = interaction.Input };
 			var result = await dialog.ShowDialog<MainWindowViewModel?>(this);
 			interaction.SetOutput(result);
 		}

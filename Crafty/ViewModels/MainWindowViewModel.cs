@@ -10,7 +10,6 @@ using Version = Crafty.Models.Version;
 using System.Windows.Input;
 using Crafty.Managers;
 
-
 namespace Crafty.ViewModels
 {
 	public class MainWindowViewModel : ViewModelBase
@@ -31,27 +30,36 @@ namespace Crafty.ViewModels
 
 			catch { Username = ConfigManager.Config.Username; }
 
-
-			ShowSettings = new Interaction<SettingsViewModel, MainWindowViewModel?>();
+			ShowSettings = new Interaction<SettingsWindowViewModel, MainWindowViewModel?>();
 
 			OpenSettingsCommand = ReactiveCommand.CreateFromTask(async () =>
 			{
 				IsDialogVisible = true;
-				var settings = new SettingsViewModel();
-				var result = await ShowSettings.Handle(settings);
+				var viewModel = new SettingsWindowViewModel();
+				var result = await ShowSettings.Handle(viewModel);
 				VersionList = Launcher.VersionList;
 				IsDialogVisible = false;
 			});
 
-			ShowAccount = new Interaction<AccountViewModel, MainWindowViewModel?>();
+			ShowAccount = new Interaction<AccountWindowViewModel, MainWindowViewModel?>();
 
 			OpenAccountCommand = ReactiveCommand.CreateFromTask(async () =>
 			{
 				IsDialogVisible = true;
-				var settings = new AccountViewModel();
-				var result = await ShowAccount.Handle(settings);
+				var viewModel = new AccountWindowViewModel();
+				var result = await ShowAccount.Handle(viewModel);
 				IsDialogVisible = false;
 				IsLoggedIn = Launcher.IsLoggedIn;
+			});
+
+			ShowAbout = new Interaction<AboutWindowViewModel, MainWindowViewModel?>();
+
+			OpenAboutCommand = ReactiveCommand.CreateFromTask(async () =>
+			{
+				IsDialogVisible = true;
+				var viewModel = new AboutWindowViewModel();
+				var result = await ShowAbout.Handle(viewModel);
+				IsDialogVisible = false;
 			});
 
 			try
@@ -84,6 +92,8 @@ namespace Crafty.ViewModels
 
 			catch { }
 		}
+
+		public string Title => $"Crafty ({Launcher.Version})";
 
 		private string _progressBarText;
 
@@ -141,10 +151,13 @@ namespace Crafty.ViewModels
 			set => this.RaiseAndSetIfChanged(ref _username, value);
 		}
 
-		public Interaction<SettingsViewModel, MainWindowViewModel?> ShowSettings { get; }
+		public Interaction<SettingsWindowViewModel, MainWindowViewModel?> ShowSettings { get; }
 		public ICommand OpenSettingsCommand { get; }
 
-		public Interaction<AccountViewModel, MainWindowViewModel?> ShowAccount { get; }
+		public Interaction<AccountWindowViewModel, MainWindowViewModel?> ShowAccount { get; }
 		public ICommand OpenAccountCommand { get; }
+
+		public Interaction<AboutWindowViewModel, MainWindowViewModel?> ShowAbout { get; }
+		public ICommand OpenAboutCommand { get; }
 	}
 }

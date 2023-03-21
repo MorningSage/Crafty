@@ -21,7 +21,7 @@
     mc:Ignorable="d">
 
     <Design.DataContext>
-        <vm:AccountViewModel />
+        <vm:AccountWindowViewModel />
     </Design.DataContext>
 
     <Border Background="#141414" CornerRadius="4">
@@ -38,9 +38,9 @@
                 Grid.Row="0"
                 Margin="10"
                 HorizontalAlignment="Center"
-                FontSize="24">
-                Account
-            </TextBlock>
+                FontSize="24"
+                FontWeight="Bold"
+                Text="Account" />
 
             <Separator Grid.Row="1" Margin="10,0,10,10" />
 

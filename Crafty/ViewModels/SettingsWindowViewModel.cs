@@ -3,7 +3,7 @@ using ReactiveUI;
 
 namespace Crafty.ViewModels
 {
-	public class SettingsViewModel : ViewModelBase
+	public class SettingsWindowViewModel : ViewModelBase
 	{
 		public int PhysicalMemory
 		{
