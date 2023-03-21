@@ -11,6 +11,7 @@ namespace Crafty
 	{
 		public override void Initialize()
 		{
+			System.Net.ServicePointManager.DefaultConnectionLimit = 512;
 			AvaloniaXamlLoader.Load(this);
 			ConfigManager.LoadConfig();
 		}
