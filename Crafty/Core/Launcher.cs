@@ -16,6 +16,7 @@ namespace Crafty.Core;
 
 public static class Launcher
 {
+	public static readonly string Version = "v1.0.2";
 	public static readonly string MinecraftPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/.crafty";
 	public static CMLauncher CmLauncher = new(new MinecraftPath(MinecraftPath));
 	public static LocalVersionLoader LocalVersionLoader = new(CmLauncher.MinecraftPath);
