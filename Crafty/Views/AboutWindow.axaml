@@ -238,7 +238,7 @@
                     Grid.Column="0"
                     Margin="10"
                     HorizontalAlignment="Stretch"
-                    VerticalAlignment="Center"
+                    VerticalAlignment="Stretch"
                     HorizontalContentAlignment="Center"
                     VerticalContentAlignment="Center"
                     Click="CloseClicked"
