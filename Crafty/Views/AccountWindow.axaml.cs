@@ -30,8 +30,6 @@ namespace Crafty.Views
 			if (!results) return;
 
 			Username.Text = Launcher.Session.Username;
-			Skin.Source = Launcher.Skin;
-
 			LoggingIn.IsVisible = false;
 			LoggedInPanel.IsVisible = true;
 			Close.IsEnabled = true;
