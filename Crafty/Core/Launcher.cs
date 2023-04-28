@@ -45,6 +45,7 @@ public static class Launcher
     public static async Task Logout()
     {
 	    MsalClientManager.Logout();
+	    Skin = null;
 	    IsLoggedIn = false;
 	}
 
