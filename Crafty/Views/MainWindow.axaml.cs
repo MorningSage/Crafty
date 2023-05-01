@@ -29,6 +29,8 @@ namespace Crafty.Views
 			catch { VersionList.SelectedItem = null; }
 		}
 
+		private void CloseClicked(object? sender, RoutedEventArgs e) => ConfigManager.SaveConfig();
+
 		private async void PlayClicked(object? sender, RoutedEventArgs e)
 		{
 			if (VersionList.SelectedItem == null) return;
@@ -44,9 +46,7 @@ namespace Crafty.Views
 				{
 					await Launcher.CmLauncher.CheckAndDownloadAsync(await Launcher.CmLauncher.GetVersionAsync(selectedVersion.Id));
 					VersionManager.UpdateVersion(selectedVersion);
-				}
-
-				catch { }
+				} catch { }
 
 				ProgressBar.Maximum = 1;
 				ProgressBar.Value = 1;
@@ -97,6 +97,8 @@ namespace Crafty.Views
 			var dialog = new AccountWindow { DataContext = interaction.Input };
 			var result = await dialog.ShowDialog<MainWindowViewModel?>(this);
 			interaction.SetOutput(result);
+
+			if (Launcher.IsLoggedIn) { Username.Text = Launcher.Session.Username; }
 		}
 
 		private async Task ShowAboutAsync(InteractionContext<AboutWindowViewModel, MainWindowViewModel?> interaction)

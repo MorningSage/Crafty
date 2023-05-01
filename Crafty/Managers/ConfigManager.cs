@@ -38,10 +38,7 @@ namespace Crafty.Managers
 				return JsonConvert.DeserializeObject<Config>(json);
 			}
 
-			catch
-			{
-				return new Config(null, 2048, null, false, false, false);
-			}
+			catch { return new Config(null, 2048, null, false, false, false); }
 		}
 	}
 }

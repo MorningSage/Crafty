@@ -12,10 +12,9 @@ namespace Crafty.ViewModels
 
 		private static async Task<Bitmap?> DownloadSkin()
 		{
-			if (Launcher.Skin != null)
-			{
-				return Launcher.Skin;
-			}
+			while (!Launcher.IsLoggedIn) await Task.Delay(1000);
+
+			if (Launcher.Skin != null) return Launcher.Skin;
 
 			var downloader = new DownloadService(new DownloadConfiguration { ParallelDownload = true });
 			Stream stream = await downloader.DownloadFileTaskAsync($"https://crafatar.com/renders/body/{Launcher.Session.UUID}");

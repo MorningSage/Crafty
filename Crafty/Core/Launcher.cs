@@ -51,8 +51,8 @@ public static class Launcher
 
     public static bool CheckUsername(string username)
     {
-	    foreach (char unvalid in username) { if (!AllowedUsernameChars.Contains(unvalid.ToString())) { return false; } }
-	    if (username.Length < 3 || username.Length > 16 || string.IsNullOrEmpty(username)) { return false; }
+	    foreach (char unvalid in username) if (!AllowedUsernameChars.Contains(unvalid.ToString())) return false;
+	    if (username.Length < 3 || username.Length > 16 || string.IsNullOrEmpty(username)) return false;
 
 	    return true;
     }

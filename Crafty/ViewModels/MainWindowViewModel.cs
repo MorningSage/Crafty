@@ -88,9 +88,7 @@ namespace Crafty.ViewModels
 					ProgressBarMaximum = e.TotalFileCount;
 					ProgressBarValue = e.ProgressedFileCount;
 				};
-			}
-
-			catch { }
+			} catch { }
 		}
 
 		public string Title => $"Crafty ({Launcher.Version})";
