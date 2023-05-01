@@ -8,9 +8,9 @@ namespace Crafty.ViewModels
 {
 	public class AccountWindowViewModel : ViewModelBase
 	{
-		public static Task<Bitmap?> Skin => DownloadSkin();
+		public Task<Bitmap?> Skin => DownloadSkin();
 
-		private static async Task<Bitmap?> DownloadSkin()
+		private async Task<Bitmap?> DownloadSkin()
 		{
 			while (!Launcher.IsLoggedIn) await Task.Delay(1000);
 

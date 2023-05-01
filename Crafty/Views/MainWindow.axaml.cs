@@ -1,4 +1,3 @@
-using System.Linq;
 using Avalonia.Interactivity;
 using CmlLib.Core;
 using Crafty.Core;
@@ -23,10 +22,6 @@ namespace Crafty.Views
 			this.WhenActivated(d => d(ViewModel!.ShowSettings.RegisterHandler(ShowSettingsAsync)));
 			this.WhenActivated(d => d(ViewModel!.ShowAccount.RegisterHandler(ShowAccountAsync)));
 			this.WhenActivated(d => d(ViewModel!.ShowAbout.RegisterHandler(ShowAboutAsync)));
-
-			Cover.Source = RandomManager.RandomCover();
-			try { VersionList.SelectedItem = Launcher.VersionList.Where(x => x.Id == ConfigManager.Config.LastVersionUsed).First(); }
-			catch { VersionList.SelectedItem = null; }
 		}
 
 		private void CloseClicked(object? sender, RoutedEventArgs e) => ConfigManager.SaveConfig();
