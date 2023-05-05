@@ -1,5 +1,6 @@
-﻿namespace ModBrowser.Managers;
-
-public static class CurseforgeApi
+﻿namespace ModBrowser.Managers
 {
+	public static class CurseforgeApi
+	{
+	}
 }
