@@ -6,9 +6,9 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="using:Crafty.ViewModels"
     Title="{Binding Title}"
-    Width="800"
+    Width="850"
     Height="500"
-    MinWidth="800"
+    MinWidth="850"
     MinHeight="500"
     Background="#141414"
     Icon="/Assets/icon.ico"
@@ -47,6 +47,7 @@
 
             <Grid Grid.Row="2" Margin="10">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
@@ -95,9 +96,22 @@
                         Stretch="UniformToFill" />
                 </Button>
 
+                <Button
+                    Grid.Column="3"
+                    Margin="0,10,10,10"
+                    VerticalAlignment="Stretch"
+                    Background="#141414"
+                    Command="{Binding OpenModBrowserCommand}"
+                    CornerRadius="4">
+                    <Image
+                        Height="32"
+                        Source="/Assets/mod_browser.png"
+                        Stretch="UniformToFill" />
+                </Button>
+
                 <TextBox
                     Name="Username"
-                    Grid.Column="3"
+                    Grid.Column="4"
                     Width="200"
                     Margin="0,10,10,10"
                     VerticalAlignment="Stretch"
@@ -109,7 +123,7 @@
 
                 <ComboBox
                     Name="VersionList"
-                    Grid.Column="4"
+                    Grid.Column="5"
                     Width="200"
                     Margin="0,10,10,10"
                     VerticalAlignment="Stretch"
@@ -127,7 +141,7 @@
 
                 <Button
                     Name="PlayButton"
-                    Grid.Column="6"
+                    Grid.Column="7"
                     Width="150"
                     Margin="10"
                     VerticalAlignment="Stretch"

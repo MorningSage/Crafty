@@ -227,6 +227,150 @@
                                 TextWrapping="Wrap" />
                         </StackPanel>
                     </Grid>
+
+                    <Grid Margin="10,5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Margin="10"
+                            VerticalAlignment="Center"
+                            FontWeight="Bold"
+                            Text="Downloader" />
+
+                        <StackPanel
+                            Grid.Row="1"
+                            Margin="20,0"
+                            Orientation="Vertical">
+                            <TextBlock
+                                Margin="0,0,0,10"
+                                VerticalAlignment="Center"
+                                Text="MIT License"
+                                TextWrapping="Wrap" />
+
+                            <TextBlock
+                                Margin="0,0,0,10"
+                                VerticalAlignment="Center"
+                                Text="Copyright (c) 2021 Behzad Khosravifar"
+                                TextWrapping="Wrap" />
+
+                            <TextBlock
+                                Margin="0,0,0,10"
+                                VerticalAlignment="Center"
+                                Text="Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:"
+                                TextWrapping="Wrap" />
+
+                            <TextBlock
+                                Margin="0,0,0,10"
+                                VerticalAlignment="Center"
+                                Text="The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software."
+                                TextWrapping="Wrap" />
+
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                Text="THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+                                TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid Margin="10,5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Margin="10"
+                            VerticalAlignment="Center"
+                            FontWeight="Bold"
+                            Text="Modrinth.Net" />
+
+                        <StackPanel
+                            Grid.Row="1"
+                            Margin="20,0"
+                            Orientation="Vertical">
+                            <TextBlock
+                                Margin="0,0,0,10"
+                                VerticalAlignment="Center"
+                                Text="MIT License"
+                                TextWrapping="Wrap" />
+
+                            <TextBlock
+                                Margin="0,0,0,10"
+                                VerticalAlignment="Center"
+                                Text="Copyright (c) 2022 Zechiax"
+                                TextWrapping="Wrap" />
+
+                            <TextBlock
+                                Margin="0,0,0,10"
+                                VerticalAlignment="Center"
+                                Text="Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:"
+                                TextWrapping="Wrap" />
+
+                            <TextBlock
+                                Margin="0,0,0,10"
+                                VerticalAlignment="Center"
+                                Text="The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software."
+                                TextWrapping="Wrap" />
+
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                Text="THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+                                TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Grid>
+
+                    <Grid Margin="10,5">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <TextBlock
+                            Grid.Row="0"
+                            Margin="10"
+                            VerticalAlignment="Center"
+                            FontWeight="Bold"
+                            Text="CurseForge.APIClient" />
+
+                        <StackPanel
+                            Grid.Row="1"
+                            Margin="20,0"
+                            Orientation="Vertical">
+                            <TextBlock
+                                Margin="0,0,0,10"
+                                VerticalAlignment="Center"
+                                Text="MIT License"
+                                TextWrapping="Wrap" />
+
+                            <TextBlock
+                                Margin="0,0,0,10"
+                                VerticalAlignment="Center"
+                                Text="Copyright (c) 2021 Chris Gårdenberg (NoLifeKing85 / It's Simple Studios)"
+                                TextWrapping="Wrap" />
+
+                            <TextBlock
+                                Margin="0,0,0,10"
+                                VerticalAlignment="Center"
+                                Text="Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the &quot;Software&quot;), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:"
+                                TextWrapping="Wrap" />
+
+                            <TextBlock
+                                Margin="0,0,0,10"
+                                VerticalAlignment="Center"
+                                Text="The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software."
+                                TextWrapping="Wrap" />
+
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                Text="THE SOFTWARE IS PROVIDED &quot;AS IS&quot;, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE."
+                                TextWrapping="Wrap" />
+                        </StackPanel>
+                    </Grid>
                 </StackPanel>
             </ScrollViewer>
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
@@ -9,7 +10,6 @@ using ReactiveUI;
 using Version = Crafty.Models.Version;
 using System.Windows.Input;
 using Crafty.Managers;
-using System.Diagnostics;
 using System.Linq;
 using Avalonia.Media.Imaging;
 
@@ -31,7 +31,10 @@ namespace Crafty.ViewModels
 				else throw new Exception("Couldn't find session file");
 			}
 
-			catch { Username = ConfigManager.Config.Username; }
+			catch
+			{
+				Username = ConfigManager.Config.Username;
+			}
 
 			ShowSettings = new Interaction<SettingsWindowViewModel, MainWindowViewModel?>();
 
@@ -65,6 +68,16 @@ namespace Crafty.ViewModels
 				IsDialogVisible = false;
 			});
 
+			ShowModBrowser = new Interaction<ModBrowserWindowViewModel, MainWindowViewModel?>();
+
+			OpenModBrowserCommand = ReactiveCommand.CreateFromTask(async () =>
+			{
+				IsDialogVisible = true;
+				var viewModel = new ModBrowserWindowViewModel();
+				var result = await ShowModBrowser.Handle(viewModel);
+				IsDialogVisible = false;
+			});
+
 			try
 			{
 				Launcher.CmLauncher.FileChanged += e =>
@@ -72,29 +85,46 @@ namespace Crafty.ViewModels
 					switch (e.FileType)
 					{
 						case MFile.Library:
-							ProgressBarText = $"Preparing libraries... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
+							ProgressBarText =
+								$"Preparing libraries... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
 							break;
 						case MFile.Minecraft:
-							ProgressBarText = $"Preparing Minecraft... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
+							ProgressBarText =
+								$"Preparing Minecraft... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
 							break;
 						case MFile.Resource:
-							ProgressBarText = $"Preparing resources... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
+							ProgressBarText =
+								$"Preparing resources... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
 							break;
 						case MFile.Runtime:
-							ProgressBarText = $"Preparing Java... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
+							ProgressBarText =
+								$"Preparing Java... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
 							break;
 						case MFile.Others:
-							ProgressBarText = $"Preparing other files... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
+							ProgressBarText =
+								$"Preparing other files... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
 							break;
 					}
 
 					ProgressBarMaximum = e.TotalFileCount;
 					ProgressBarValue = e.ProgressedFileCount;
 				};
-			} catch { }
+			}
 
-			try { SelectedItem = Launcher.VersionList.Where(x => x.Id == ConfigManager.Config.LastVersionUsed).First(); }
-			catch { SelectedItem = null; }
+			catch
+			{
+				Debug.WriteLine("Something went wrong while settings progress bar");
+			}
+
+			try
+			{
+				SelectedItem = Launcher.VersionList.Where(x => x.Id == ConfigManager.Config.LastVersionUsed).First();
+			}
+
+			catch
+			{
+				SelectedItem = null;
+			}
 		}
 
 		public string Title => $"Crafty ({Launcher.Version})";
@@ -173,5 +203,8 @@ namespace Crafty.ViewModels
 
 		public Interaction<AboutWindowViewModel, MainWindowViewModel?> ShowAbout { get; }
 		public ICommand OpenAboutCommand { get; }
+
+		public Interaction<ModBrowserWindowViewModel, MainWindowViewModel?> ShowModBrowser { get; }
+		public ICommand OpenModBrowserCommand { get; }
 	}
 }
