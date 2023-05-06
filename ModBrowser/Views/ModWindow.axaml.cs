@@ -19,7 +19,7 @@ namespace ModBrowser.Views
 
 		private async void DownloadClicked(object? sender, RoutedEventArgs e)
 		{
-			string url = await ModrinthApi.GetProjectDownloadUrl(Mod.ProjectVersions.Last());
+			string url = await ModrinthApi.GetProjectDownloadUrl(Mod.ProjectVersions.First());
 			DownloadManager.Download(url);
 		}
 	}

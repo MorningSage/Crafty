@@ -46,7 +46,7 @@ namespace ModBrowser.Models
 			string data = await response.Content.ReadAsStringAsync();
 
 			dynamic json = JsonConvert.DeserializeObject<dynamic>(data);
-			ProjectVersions = ((JArray)json.versions).Select(x => (string)x).ToArray();
+			ProjectVersions = ((JArray)json.versions).Select(x => (string)x).Reverse().ToArray();
 		}
 
 		public Task<Bitmap> Icon => DownloadIcon(IconUrl);
