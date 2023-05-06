@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Reactive;
 using Crafty.Managers;
 using Crafty.Models;
@@ -28,12 +29,15 @@ namespace Crafty.ViewModels
         {
 	        try
 	        {
-	            Version? version = (Version?)selectedItem;
-	            if (version == null) return;
-	            foreach (var file in version.Files) DownloadManager.Download(file.Url);
+		        Version? version = (Version?)selectedItem;
+		        if (version == null) return;
+		        foreach (var file in version.Files) DownloadManager.Download(file.Url);
 	        }
 
-            catch { }
+	        catch
+	        {
+		        Debug.WriteLine("Something went wrong while downloading a mod");
+			}
         }
     }
 }

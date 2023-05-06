@@ -11,6 +11,8 @@ using Avalonia.ReactiveUI;
 using CmlLib.Core.Version;
 using Crafty.ViewModels;
 using ReactiveUI;
+using System;
+using System.Diagnostics;
 
 namespace Crafty.Views
 {
@@ -54,7 +56,12 @@ namespace Crafty.Views
 				{
 					await Launcher.CmLauncher.CheckAndDownloadAsync(await Launcher.CmLauncher.GetVersionAsync(selectedVersion.Id));
 					VersionManager.UpdateVersion(selectedVersion);
-				} catch { }
+				}
+
+				catch
+				{
+					Debug.WriteLine("Something went wrong while checking game files");
+				}
 
 				ProgressBar.Maximum = 1;
 				ProgressBar.Value = 1;

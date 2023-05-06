@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using CmlLib.Core.Auth;
@@ -49,7 +49,7 @@ namespace Crafty.Managers
 
 			catch
 			{
-				Console.WriteLine("Couldn't clear cache!");
+				Debug.WriteLine("Couldn't clear cache!");
 			}
 
 			try
@@ -59,7 +59,7 @@ namespace Crafty.Managers
 
 			catch
 			{
-				Console.WriteLine("Couldn't delete cache file!");
+				Debug.WriteLine("Couldn't delete cache file!");
 			}
 		}
 	}

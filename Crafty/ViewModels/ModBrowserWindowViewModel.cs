@@ -1,4 +1,5 @@
-﻿using Modrinth.Models;
+﻿using System.Diagnostics;
+using Modrinth.Models;
 using ReactiveUI;
 using System.Reactive;
 using Modrinth;
@@ -88,7 +89,10 @@ namespace Crafty.ViewModels
 		        Router.NavigateBack.Execute();
 	        }
 
-	        catch { }
+	        catch
+	        {
+		        Debug.WriteLine("Something went wrong while navigating back");
+			}
         } 
 	}
 }
