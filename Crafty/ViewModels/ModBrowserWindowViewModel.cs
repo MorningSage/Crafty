@@ -88,11 +88,7 @@ namespace Crafty.ViewModels
 	        {
 		        Router.NavigateBack.Execute();
 	        }
-
-	        catch
-	        {
-		        Debug.WriteLine("Something went wrong while navigating back");
-			}
+	        catch { }
         } 
 	}
 }

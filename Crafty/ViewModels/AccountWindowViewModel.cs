@@ -25,8 +25,10 @@ namespace Crafty.ViewModels
 				Launcher.Skin = bitmap;
 				return bitmap;
 			}
-
-			catch { return null; }
+			catch
+			{
+				return null;
+			}
 		}
 	}
 }

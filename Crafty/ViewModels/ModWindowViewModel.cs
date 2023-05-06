@@ -33,11 +33,7 @@ namespace Crafty.ViewModels
 		        if (version == null) return;
 		        foreach (var file in version.Files) DownloadManager.Download(file.Url);
 	        }
-
-	        catch
-	        {
-		        Debug.WriteLine("Something went wrong while downloading a mod");
-			}
+	        catch { }
         }
     }
 }

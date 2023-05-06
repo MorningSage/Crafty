@@ -24,7 +24,6 @@ namespace Crafty.Managers
 				var session = await Launcher.LoginHandler.LoginFromCache();
 				return session.GameSession;
 			}
-
 			catch
 			{
 				try
@@ -32,7 +31,6 @@ namespace Crafty.Managers
 					var session = await Launcher.LoginHandler.LoginFromOAuth();
 					return session.GameSession;
 				}
-
 				catch { return null; }
 			}
 		}
@@ -46,21 +44,13 @@ namespace Crafty.Managers
 			{
 				await Launcher.LoginHandler.ClearCache();
 			}
-
-			catch
-			{
-				Debug.WriteLine("Couldn't clear cache!");
-			}
+			catch { }
 
 			try
 			{
 				File.Delete($"{Launcher.MinecraftPath}/crafty_session.json");
 			}
-
-			catch
-			{
-				Debug.WriteLine("Couldn't delete cache file!");
-			}
+			catch { }
 		}
 	}
 }

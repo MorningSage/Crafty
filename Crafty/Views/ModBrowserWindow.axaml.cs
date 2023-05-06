@@ -1,7 +1,6 @@
 using Avalonia.Interactivity;
 using Avalonia.ReactiveUI;
 using Crafty.ViewModels;
-using ReactiveUI;
 
 namespace Crafty.Views
 {
@@ -9,7 +8,6 @@ namespace Crafty.Views
 	{
 		public ModBrowserWindow()
 		{
-			this.WhenActivated(disposables => { });
 			InitializeComponent();
 		}
 

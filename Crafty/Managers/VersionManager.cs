@@ -47,12 +47,10 @@ namespace Crafty.Managers
 		private static MVersionCollection GetMVersions()
 		{
 			MVersionCollection versions;
-
 			try
 			{
 				versions = Launcher.CmLauncher.GetAllVersions();
 			}
-
 			catch
 			{
 				versions = Launcher.LocalVersionLoader.GetVersionMetadatas();

@@ -39,9 +39,9 @@ namespace Crafty.Models
 
 		public Modrinth.Models.Version LatestProjectVersion { get; set; }
 
-		public Task<Bitmap> Icon => DownloadIcon(IconUrl);
+		public Task<Bitmap?> Icon => DownloadIcon(IconUrl);
 
-		private async Task<Bitmap> DownloadIcon(string url)
+		private async Task<Bitmap?> DownloadIcon(string url)
 		{
 			var downloader = new DownloadService(new DownloadConfiguration { ParallelDownload = true});
 			Stream stream = await downloader.DownloadFileTaskAsync(url);
@@ -51,7 +51,6 @@ namespace Crafty.Models
 				Bitmap bitmap = new Bitmap(stream);
 				return bitmap;
 			}
-
 			catch
 			{
 				return null;

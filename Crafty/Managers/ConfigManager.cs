@@ -22,7 +22,6 @@ namespace Crafty.Managers
 			    string json = File.ReadAllText(Launcher.MinecraftPath + "/config.json");
 			    Config = JsonConvert.DeserializeObject<Config>(json);
 		    }
-
 		    catch
 		    {
 			    Config = new Config(null, 2048, null, false, false, false);
@@ -37,9 +36,10 @@ namespace Crafty.Managers
 				string json = File.ReadAllText(Launcher.MinecraftPath + "/config.json");
 				return JsonConvert.DeserializeObject<Config>(json);
 			}
-
-			catch { return new Config(null, 2048, null, false, false, false); }
+			catch
+			{
+				return new Config(null, 2048, null, false, false, false);
+			}
 		}
 	}
 }
-

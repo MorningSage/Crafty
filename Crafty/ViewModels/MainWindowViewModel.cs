@@ -27,10 +27,8 @@ namespace Crafty.ViewModels
 					loginTask.Wait();
 					Username = Launcher.Session.Username;
 				}
-
 				else throw new Exception("Couldn't find session file");
 			}
-
 			catch
 			{
 				Username = ConfigManager.Config.Username;
@@ -85,24 +83,19 @@ namespace Crafty.ViewModels
 					switch (e.FileType)
 					{
 						case MFile.Library:
-							ProgressBarText =
-								$"Preparing libraries... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
+							ProgressBarText = $"Preparing libraries... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
 							break;
 						case MFile.Minecraft:
-							ProgressBarText =
-								$"Preparing Minecraft... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
+							ProgressBarText = $"Preparing Minecraft... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
 							break;
 						case MFile.Resource:
-							ProgressBarText =
-								$"Preparing resources... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
+							ProgressBarText = $"Preparing resources... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
 							break;
 						case MFile.Runtime:
-							ProgressBarText =
-								$"Preparing Java... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
+							ProgressBarText = $"Preparing Java... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
 							break;
 						case MFile.Others:
-							ProgressBarText =
-								$"Preparing other files... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
+							ProgressBarText = $"Preparing other files... {e.ProgressedFileCount}/{e.TotalFileCount} ({Math.Round((double)(100 * e.ProgressedFileCount) / e.TotalFileCount)}%)";
 							break;
 					}
 
@@ -110,17 +103,12 @@ namespace Crafty.ViewModels
 					ProgressBarValue = e.ProgressedFileCount;
 				};
 			}
-
-			catch
-			{
-				Debug.WriteLine("Something went wrong while settings progress bar");
-			}
+			catch { }
 
 			try
 			{
 				SelectedItem = Launcher.VersionList.Where(x => x.Id == ConfigManager.Config.LastVersionUsed).First();
 			}
-
 			catch
 			{
 				SelectedItem = null;

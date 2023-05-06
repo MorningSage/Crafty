@@ -27,7 +27,7 @@ namespace Crafty.Views
 			Close();
 		}
 
-		private void RamSlider_OnPointerMoved(object? sender, PointerEventArgs e) { RamText.Text = $"{RamSlider.Value}MB"; }
-		private void RamSlider_OnPointerExited(object? sender, PointerEventArgs e) { RamText.Text = "RAM Usage"; }
+		private void RamSlider_OnPointerMoved(object? sender, PointerEventArgs e) => RamText.Text = $"{RamSlider.Value}MB";
+		private void RamSlider_OnPointerExited(object? sender, PointerEventArgs e) => RamText.Text = "RAM Usage";
 	}
 }
