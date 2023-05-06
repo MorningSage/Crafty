@@ -1,18 +1,14 @@
 ﻿using System.IO;
-using System.Linq;
 using Avalonia.Media.Imaging;
 using Modrinth.Models;
 using System.Threading.Tasks;
 using Downloader;
-using Newtonsoft.Json.Linq;
-using Newtonsoft.Json;
-using System.Net.Http;
 
 namespace ModBrowser.Models
 {
 	public class Mod : SearchResult
 	{
-		public Mod(SearchResult searchResult)
+		public Mod(SearchResult searchResult, Version[] projectVersionList)
 		{
 			Slug = searchResult.Slug;
 			Title = searchResult.Title;
@@ -34,20 +30,10 @@ namespace ModBrowser.Models
 			Versions = searchResult.Versions;
 			Gallery = searchResult.Gallery;
 			Color = searchResult.Color;
-
-			SetProjectVersions();
+			ProjectVersionList = projectVersionList;
 		}
 
-		public string[] ProjectVersions;
-
-		private async void SetProjectVersions()
-		{
-			HttpResponseMessage response = await new HttpClient().GetAsync($"https://api.modrinth.com/v2/project/{ProjectId}");
-			string data = await response.Content.ReadAsStringAsync();
-
-			dynamic json = JsonConvert.DeserializeObject<dynamic>(data);
-			ProjectVersions = ((JArray)json.versions).Select(x => (string)x).Reverse().ToArray();
-		}
+		public Version[] ProjectVersionList;
 
 		public Task<Bitmap> Icon => DownloadIcon(IconUrl);
 

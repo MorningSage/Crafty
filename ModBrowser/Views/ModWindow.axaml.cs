@@ -1,3 +1,4 @@
+using System.Diagnostics;
 using System.Linq;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
@@ -17,10 +18,9 @@ namespace ModBrowser.Views
 			DataContext = Mod;
 		}
 
-		private async void DownloadClicked(object? sender, RoutedEventArgs e)
+		private void DownloadClicked(object? sender, RoutedEventArgs e)
 		{
-			string url = await ModrinthApi.GetProjectDownloadUrl(Mod.ProjectVersions.First());
-			DownloadManager.Download(url);
+			foreach (var x in Mod.ProjectVersionList.First().Files) DownloadManager.Download(x.Url);
 		}
 	}
 }
