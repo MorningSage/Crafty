@@ -49,7 +49,12 @@ namespace ModBrowser.ViewModels
 
 			Results.Clear();
 			var search = await ModrinthApi.Client.Project.SearchAsync(query, facets: new() { Facet.ProjectType(ProjectType.Mod) });
-			foreach (SearchResult searchResult in search.Hits) { Results.Add(new Mod(searchResult)); }
+
+			foreach (SearchResult searchResult in search.Hits)
+			{
+				var projectVersionList = await ModrinthApi.Client.Version.GetProjectVersionListAsync(searchResult.ProjectId);
+				Results.Add(new Mod(searchResult, projectVersionList));
+			}
 
 			Searching = false;
 			SearchButtonText = "Search";

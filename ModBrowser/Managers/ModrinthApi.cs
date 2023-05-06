@@ -1,7 +1,4 @@
 ﻿using Modrinth;
-using Newtonsoft.Json.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace ModBrowser.Managers
 {
@@ -14,14 +11,5 @@ namespace ModBrowser.Managers
 		};
 
 		public static ModrinthClient Client = new(userAgent: _userAgent);
-
-		public static async Task<string> GetProjectDownloadUrl(string projectVersion)
-		{
-			HttpResponseMessage response = await new HttpClient().GetAsync($"https://api.modrinth.com/v2/version/{projectVersion}");
-			string data = await response.Content.ReadAsStringAsync();
-
-			JObject json = JObject.Parse(data);
-			return json.SelectToken("files[0].url").ToString();
-		}
 	}
 }
