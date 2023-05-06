@@ -42,7 +42,7 @@ namespace ModBrowser.ViewModels
 
 		public ReactiveCommand<string, Unit> SearchModsCommand { get; }
 
-		public async void SearchMods(string query)
+		private async void SearchMods(string query)
 		{
 			Searching = true;
 			SearchButtonText = "Searching...";

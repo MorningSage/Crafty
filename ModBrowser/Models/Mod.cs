@@ -33,7 +33,7 @@ namespace ModBrowser.Models
 			ProjectVersionList = projectVersionList;
 		}
 
-		public Version[] ProjectVersionList;
+		public Version[] ProjectVersionList { get; set; }
 
 		public Task<Bitmap> Icon => DownloadIcon(IconUrl);
 

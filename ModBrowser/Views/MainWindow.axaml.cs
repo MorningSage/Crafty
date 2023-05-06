@@ -1,5 +1,6 @@
 using Avalonia.Controls;
 using ModBrowser.Models;
+using ModBrowser.ViewModels;
 
 namespace ModBrowser.Views
 {
@@ -19,7 +20,7 @@ namespace ModBrowser.Views
 
 				if (mod == null) { return; }
 
-				var dialog = new ModWindow(mod);
+				var dialog = new ModWindow(new ModWindowViewModel(mod));
 				var result = await dialog.ShowDialog<string>(this);
 			}
 
