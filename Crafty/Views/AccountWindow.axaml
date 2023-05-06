@@ -63,7 +63,8 @@
                 <Image
                     Name="Skin"
                     Grid.Column="0"
-                    Margin="10" />
+                    Margin="10"
+                    Source="{Binding Skin^}" />
 
                 <StackPanel
                     Name="LoginInfoPanel"

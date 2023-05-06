@@ -9,6 +9,9 @@ using ReactiveUI;
 using Version = Crafty.Models.Version;
 using System.Windows.Input;
 using Crafty.Managers;
+using System.Diagnostics;
+using System.Linq;
+using Avalonia.Media.Imaging;
 
 namespace Crafty.ViewModels
 {
@@ -88,12 +91,15 @@ namespace Crafty.ViewModels
 					ProgressBarMaximum = e.TotalFileCount;
 					ProgressBarValue = e.ProgressedFileCount;
 				};
-			}
+			} catch { }
 
-			catch { }
+			try { SelectedItem = Launcher.VersionList.Where(x => x.Id == ConfigManager.Config.LastVersionUsed).First(); }
+			catch { SelectedItem = null; }
 		}
 
 		public string Title => $"Crafty ({Launcher.Version})";
+
+		public Task<Bitmap> Cover => RandomManager.RandomCover();
 
 		private string _progressBarText;
 
@@ -149,6 +155,14 @@ namespace Crafty.ViewModels
 		{
 			get => _username;
 			set => this.RaiseAndSetIfChanged(ref _username, value);
+		}
+
+		private Version? _selectedItem;
+
+		public Version? SelectedItem
+		{
+			get => _selectedItem;
+			set => this.RaiseAndSetIfChanged(ref _selectedItem, value);
 		}
 
 		public Interaction<SettingsWindowViewModel, MainWindowViewModel?> ShowSettings { get; }

@@ -3,44 +3,43 @@ using System.IO;
 using Crafty.Core;
 using Crafty.Models;
 
-namespace Crafty.Managers;
-
-public static class ConfigManager
+namespace Crafty.Managers
 {
-	public static Config Config;
-
-    public static async void SaveConfig()
-    {
-	    var json = JsonConvert.SerializeObject(Config);
-        await File.WriteAllTextAsync(Launcher.MinecraftPath + "/config.json", json);
-    }
-
-    public static void LoadConfig()
-    {
-	    try
-	    {
-		    string json = File.ReadAllText(Launcher.MinecraftPath + "/config.json");
-		    Config = JsonConvert.DeserializeObject<Config>(json);
-	    }
-
-	    catch
-	    {
-		    Config = new Config(null, 2048, null, false, false, false);
-			SaveConfig();
-	    }
-	}
-
-	public static Config ReturnConfig()
+	public static class ConfigManager
 	{
-		try
-		{
-			string json = File.ReadAllText(Launcher.MinecraftPath + "/config.json");
-			return JsonConvert.DeserializeObject<Config>(json);
+		public static Config Config;
+
+	    public static async void SaveConfig()
+	    {
+		    var json = JsonConvert.SerializeObject(Config);
+	        await File.WriteAllTextAsync(Launcher.MinecraftPath + "/config.json", json);
+	    }
+
+	    public static void LoadConfig()
+	    {
+		    try
+		    {
+			    string json = File.ReadAllText(Launcher.MinecraftPath + "/config.json");
+			    Config = JsonConvert.DeserializeObject<Config>(json);
+		    }
+
+		    catch
+		    {
+			    Config = new Config(null, 2048, null, false, false, false);
+				SaveConfig();
+		    }
 		}
 
-		catch
+		public static Config ReturnConfig()
 		{
-			return new Config(null, 2048, null, false, false, false);
+			try
+			{
+				string json = File.ReadAllText(Launcher.MinecraftPath + "/config.json");
+				return JsonConvert.DeserializeObject<Config>(json);
+			}
+
+			catch { return new Config(null, 2048, null, false, false, false); }
 		}
 	}
 }
+

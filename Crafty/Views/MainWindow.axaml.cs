@@ -1,4 +1,3 @@
-using System.Linq;
 using Avalonia.Interactivity;
 using CmlLib.Core;
 using Crafty.Core;
@@ -23,11 +22,9 @@ namespace Crafty.Views
 			this.WhenActivated(d => d(ViewModel!.ShowSettings.RegisterHandler(ShowSettingsAsync)));
 			this.WhenActivated(d => d(ViewModel!.ShowAccount.RegisterHandler(ShowAccountAsync)));
 			this.WhenActivated(d => d(ViewModel!.ShowAbout.RegisterHandler(ShowAboutAsync)));
-
-			Cover.Source = RandomManager.RandomCover();
-			try { VersionList.SelectedItem = Launcher.VersionList.Where(x => x.Id == ConfigManager.Config.LastVersionUsed).First(); }
-			catch { VersionList.SelectedItem = null; }
 		}
+
+		private void CloseClicked(object? sender, RoutedEventArgs e) => ConfigManager.SaveConfig();
 
 		private async void PlayClicked(object? sender, RoutedEventArgs e)
 		{
@@ -44,9 +41,7 @@ namespace Crafty.Views
 				{
 					await Launcher.CmLauncher.CheckAndDownloadAsync(await Launcher.CmLauncher.GetVersionAsync(selectedVersion.Id));
 					VersionManager.UpdateVersion(selectedVersion);
-				}
-
-				catch { }
+				} catch { }
 
 				ProgressBar.Maximum = 1;
 				ProgressBar.Value = 1;
@@ -97,6 +92,8 @@ namespace Crafty.Views
 			var dialog = new AccountWindow { DataContext = interaction.Input };
 			var result = await dialog.ShowDialog<MainWindowViewModel?>(this);
 			interaction.SetOutput(result);
+
+			if (Launcher.IsLoggedIn) { Username.Text = Launcher.Session.Username; }
 		}
 
 		private async Task ShowAboutAsync(InteractionContext<AboutWindowViewModel, MainWindowViewModel?> interaction)
