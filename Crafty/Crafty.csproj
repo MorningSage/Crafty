@@ -28,13 +28,21 @@
     <PackageReference Include="CmlLib.Core" Version="3.3.6" />
     <PackageReference Include="CmlLib.Core.Auth.Microsoft" Version="2.2.0" />
     <PackageReference Include="CmlLib.Core.Auth.Microsoft.MsalClient" Version="2.0.0" />
+    <PackageReference Include="CurseForge.APIClient" Version="2.1.0" />
     <PackageReference Include="Downloader" Version="3.0.4" />
+    <PackageReference Include="Modrinth.Net" Version="3.1.1" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Update="Views\ModWindow.axaml.cs">
+      <DependentUpon>%(Filename)</DependentUpon>
+    </Compile>
     <Compile Update="Views\AboutWindow.axaml.cs">
       <DependentUpon>AboutWindow.axaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\ModBrowserWindow.axaml.cs">
+      <DependentUpon>ModBrowserWindow.axaml</DependentUpon>
     </Compile>
     <Compile Update="Views\SettingsWindow.axaml.cs">
       <DependentUpon>SettingsWindow.axaml</DependentUpon>

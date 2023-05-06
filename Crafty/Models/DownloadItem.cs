@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Diagnostics;
 using Downloader;
 
-namespace ModBrowser.Models
+namespace Crafty.Models
 {
 	public class DownloadItem
 	{

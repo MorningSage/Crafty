@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Crafty.Models;
 using Downloader;
-using ModBrowser.Models;
 
-namespace ModBrowser.Managers
+namespace Crafty.Managers
 {
 	public static class DownloadManager
 	{

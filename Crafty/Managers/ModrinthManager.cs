@@ -1,8 +1,8 @@
 ﻿using Modrinth;
 
-namespace ModBrowser.Managers
+namespace Crafty.Managers
 {
-	public static class ModrinthApi
+	public static class ModrinthManager
 	{
 		private static UserAgent _userAgent = new()
 		{

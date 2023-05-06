@@ -9,7 +9,6 @@ using ReactiveUI;
 using Version = Crafty.Models.Version;
 using System.Windows.Input;
 using Crafty.Managers;
-using System.Diagnostics;
 using System.Linq;
 using Avalonia.Media.Imaging;
 
@@ -31,7 +30,10 @@ namespace Crafty.ViewModels
 				else throw new Exception("Couldn't find session file");
 			}
 
-			catch { Username = ConfigManager.Config.Username; }
+			catch
+			{
+				Username = ConfigManager.Config.Username;
+			}
 
 			ShowSettings = new Interaction<SettingsWindowViewModel, MainWindowViewModel?>();
 
@@ -62,6 +64,16 @@ namespace Crafty.ViewModels
 				IsDialogVisible = true;
 				var viewModel = new AboutWindowViewModel();
 				var result = await ShowAbout.Handle(viewModel);
+				IsDialogVisible = false;
+			});
+
+			ShowModBrowser = new Interaction<ModBrowserWindowViewModel, MainWindowViewModel?>();
+
+			OpenModBrowserCommand = ReactiveCommand.CreateFromTask(async () =>
+			{
+				IsDialogVisible = true;
+				var viewModel = new ModBrowserWindowViewModel();
+				var result = await ShowModBrowser.Handle(viewModel);
 				IsDialogVisible = false;
 			});
 
@@ -173,5 +185,8 @@ namespace Crafty.ViewModels
 
 		public Interaction<AboutWindowViewModel, MainWindowViewModel?> ShowAbout { get; }
 		public ICommand OpenAboutCommand { get; }
+
+		public Interaction<ModBrowserWindowViewModel, MainWindowViewModel?> ShowModBrowser { get; }
+		public ICommand OpenModBrowserCommand { get; }
 	}
 }

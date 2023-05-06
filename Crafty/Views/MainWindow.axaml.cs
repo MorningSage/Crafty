@@ -1,3 +1,4 @@
+using System.Linq;
 using Avalonia.Interactivity;
 using CmlLib.Core;
 using Crafty.Core;
@@ -22,6 +23,17 @@ namespace Crafty.Views
 			this.WhenActivated(d => d(ViewModel!.ShowSettings.RegisterHandler(ShowSettingsAsync)));
 			this.WhenActivated(d => d(ViewModel!.ShowAccount.RegisterHandler(ShowAccountAsync)));
 			this.WhenActivated(d => d(ViewModel!.ShowAbout.RegisterHandler(ShowAboutAsync)));
+			this.WhenActivated(d => d(ViewModel!.ShowModBrowser.RegisterHandler(ShowModBrowserAsync)));
+
+			try
+			{
+				VersionList.SelectedItem = Launcher.VersionList.Where(x => x.Id == ConfigManager.Config.LastVersionUsed).First();
+			}
+
+			catch
+			{
+				VersionList.SelectedItem = null;
+			}
 		}
 
 		private void CloseClicked(object? sender, RoutedEventArgs e) => ConfigManager.SaveConfig();
@@ -35,6 +47,7 @@ namespace Crafty.Views
 			PlayButton.IsEnabled = false;
 
 			Version selectedVersion = (Version)VersionList.SelectedItem;
+
 			try
 			{
 				try
@@ -99,6 +112,13 @@ namespace Crafty.Views
 		private async Task ShowAboutAsync(InteractionContext<AboutWindowViewModel, MainWindowViewModel?> interaction)
 		{
 			var dialog = new AboutWindow { DataContext = interaction.Input };
+			var result = await dialog.ShowDialog<MainWindowViewModel?>(this);
+			interaction.SetOutput(result);
+		}
+
+		private async Task ShowModBrowserAsync(InteractionContext<ModBrowserWindowViewModel, MainWindowViewModel?> interaction)
+		{
+			var dialog = new ModBrowserWindow { DataContext = interaction.Input };
 			var result = await dialog.ShowDialog<MainWindowViewModel?>(this);
 			interaction.SetOutput(result);
 		}

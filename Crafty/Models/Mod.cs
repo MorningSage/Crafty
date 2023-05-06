@@ -1,14 +1,15 @@
 ﻿using System.IO;
+using System.Linq;
 using Avalonia.Media.Imaging;
 using Modrinth.Models;
 using System.Threading.Tasks;
 using Downloader;
 
-namespace ModBrowser.Models
+namespace Crafty.Models
 {
 	public class Mod : SearchResult
 	{
-		public Mod(SearchResult searchResult, Version[] projectVersionList)
+		public Mod(SearchResult searchResult, Modrinth.Models.Version[] projectVersionList)
 		{
 			Slug = searchResult.Slug;
 			Title = searchResult.Title;
@@ -31,9 +32,12 @@ namespace ModBrowser.Models
 			Gallery = searchResult.Gallery;
 			Color = searchResult.Color;
 			ProjectVersionList = projectVersionList;
+			LatestProjectVersion = projectVersionList.First();
 		}
 
-		public Version[] ProjectVersionList { get; set; }
+		public Modrinth.Models.Version[] ProjectVersionList { get; set; }
+
+		public Modrinth.Models.Version LatestProjectVersion { get; set; }
 
 		public Task<Bitmap> Icon => DownloadIcon(IconUrl);
 
@@ -48,7 +52,10 @@ namespace ModBrowser.Models
 				return bitmap;
 			}
 
-			catch { return null; }
+			catch
+			{
+				return null;
+			}
 		}
 	}
 }
