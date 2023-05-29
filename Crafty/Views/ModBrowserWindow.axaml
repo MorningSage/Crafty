@@ -22,7 +22,6 @@
             <Button
                 Width="150"
                 Margin="5,10,10,10"
-                HorizontalAlignment="Stretch"
                 HorizontalContentAlignment="Center"
                 Command="{Binding SearchModsCommand}"
                 CommandParameter="{Binding ElementName=SearchBox, Path=Text}"
