@@ -1,8 +1,8 @@
-﻿using System.IO;
-using Crafty.Core;
-using Avalonia.Collections;
+﻿using Avalonia.Collections;
 using CmlLib.Core.Version;
+using Crafty.Core;
 using Crafty.Models;
+using System.IO;
 
 namespace Crafty.Managers
 {
@@ -28,8 +28,7 @@ namespace Crafty.Managers
 
 			foreach (var version in versions)
 			{
-				if (version.IsLocalVersion &&
-				    File.Exists($"{Launcher.MinecraftPath}/versions/{version.Name}/{version.Name}.jar"))
+				if (version.IsLocalVersion && File.Exists($"{Launcher.MinecraftPath}/versions/{version.Name}/{version.Name}.json"))
 					versionList.Add(new Version($"✅ {version.Name}", version.Name, "local", true));
 				else if (version.Type == "release")
 					versionList.Add(new Version(version.Name, version.Name, version.Type));
@@ -39,6 +38,7 @@ namespace Crafty.Managers
 					versionList.Add(new Version(version.Name, version.Name, version.Type));
 				else if (version.Type == "old_alpha" && config.GetAlphas)
 					versionList.Add(new Version(version.Name, version.Name, version.Type));
+
 			}
 
 			return versionList;
