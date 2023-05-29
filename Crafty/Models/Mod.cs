@@ -9,7 +9,7 @@ namespace Crafty.Models
 {
 	public class Mod : SearchResult
 	{
-		public Mod(SearchResult searchResult, Modrinth.Models.Version[] projectVersionList)
+		public Mod(SearchResult searchResult, Modrinth.Models.Version[] projectVersionList, Project project)
 		{
 			Slug = searchResult.Slug;
 			Title = searchResult.Title;
@@ -33,11 +33,14 @@ namespace Crafty.Models
 			Color = searchResult.Color;
 			ProjectVersionList = projectVersionList;
 			LatestProjectVersion = projectVersionList.First();
+			Body = project.Body;
 		}
 
-		public Modrinth.Models.Version[] ProjectVersionList { get; set; }
+		public Modrinth.Models.Version[] ProjectVersionList { get; }
 
-		public Modrinth.Models.Version LatestProjectVersion { get; set; }
+		public Modrinth.Models.Version LatestProjectVersion { get; }
+
+		public string Body { get; }
 
 		public Task<Bitmap?> Icon => DownloadIcon(IconUrl);
 

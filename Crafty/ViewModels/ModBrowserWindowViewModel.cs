@@ -61,8 +61,9 @@ namespace Crafty.ViewModels
 
 			foreach (SearchResult searchResult in search.Hits)
 			{
+				var project = await ModrinthManager.Client.Project.GetAsync(searchResult.ProjectId);
 				var projectVersionList = await ModrinthManager.Client.Version.GetProjectVersionListAsync(searchResult.ProjectId);
-				Results.Add(new Mod(searchResult, projectVersionList));
+				Results.Add(new Mod(searchResult, projectVersionList, project));
 			}
 
 			Searching = false;
