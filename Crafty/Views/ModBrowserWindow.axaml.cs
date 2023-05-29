@@ -1,16 +1,26 @@
-using Avalonia.Interactivity;
+using Avalonia.Controls;
 using Avalonia.ReactiveUI;
+using Crafty.Models;
 using Crafty.ViewModels;
 
 namespace Crafty.Views
 {
-	public partial class ModBrowserWindow : ReactiveWindow<ModBrowserWindowViewModel>
+	public partial class ModBrowserWindow : ReactiveUserControl<ModBrowserWindowViewModel>
 	{
-		public ModBrowserWindow()
+		public ModBrowserWindow(ModBrowserWindowViewModel viewModel)
 		{
 			InitializeComponent();
+			DataContext = viewModel;
 		}
 
-		private void CloseClicked(object? sender, RoutedEventArgs e) => Close();
+		private void ModList_OnSelectionChanged(object? sender, SelectionChangedEventArgs e)
+		{
+			Mod mod = ModList.SelectedItem as Mod;
+
+			if (mod != null)
+			{
+				((ModBrowserWindowViewModel)DataContext).NavigateToMod(mod);
+			}
+		}
 	}
 }

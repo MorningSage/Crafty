@@ -1,9 +1,9 @@
-﻿using System.IO;
-using System.Linq;
-using Avalonia.Media.Imaging;
-using Modrinth.Models;
-using System.Threading.Tasks;
+﻿using Avalonia.Media.Imaging;
 using Downloader;
+using Modrinth.Models;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Crafty.Models
 {
@@ -43,7 +43,7 @@ namespace Crafty.Models
 
 		private async Task<Bitmap?> DownloadIcon(string url)
 		{
-			var downloader = new DownloadService(new DownloadConfiguration { ParallelDownload = true});
+			var downloader = new DownloadService(new DownloadConfiguration { ParallelDownload = true });
 			Stream stream = await downloader.DownloadFileTaskAsync(url);
 
 			try

@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Crafty.Models;
+using Downloader;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using Crafty.Models;
-using Downloader;
 
 namespace Crafty.Managers
 {

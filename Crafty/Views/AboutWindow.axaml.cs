@@ -1,15 +1,14 @@
-using Avalonia.Controls;
-using Avalonia.Interactivity;
+using Avalonia.ReactiveUI;
+using Crafty.ViewModels;
 
 namespace Crafty.Views
 {
-	public partial class AboutWindow : Window
+	public partial class AboutWindow : ReactiveUserControl<AboutWindowViewModel>
 	{
-		public AboutWindow()
+		public AboutWindow(AboutWindowViewModel viewModel)
 		{
 			InitializeComponent();
+			DataContext = viewModel;
 		}
-
-		private void CloseClicked(object? sender, RoutedEventArgs e) => Close();
 	}
 }

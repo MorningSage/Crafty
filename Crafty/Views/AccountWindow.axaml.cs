@@ -1,26 +1,24 @@
-using Avalonia.Controls;
 using Avalonia.Interactivity;
+using Avalonia.ReactiveUI;
 using Crafty.Core;
+using Crafty.ViewModels;
 
 namespace Crafty.Views
 {
-	public partial class AccountWindow : Window
+	public partial class AccountWindow : ReactiveUserControl<AccountWindowViewModel>
 	{
-		public AccountWindow()
+		public AccountWindow(AccountWindowViewModel viewModel)
 		{
 			InitializeComponent();
+			DataContext = viewModel;
 			Login();
 		}
-
-		private void CloseClicked(object? sender, RoutedEventArgs e) => Close();
 
 		private async void LogoutClicked(object? sender, RoutedEventArgs e)
 		{
 			LoggedInPanel.IsVisible = false;
-			Close.IsEnabled = false;
 
 			await Launcher.Logout();
-			Close();
 		}
 
 		private async void Login()
@@ -32,7 +30,6 @@ namespace Crafty.Views
 			Username.Text = Launcher.Session.Username;
 			LoggingIn.IsVisible = false;
 			LoggedInPanel.IsVisible = true;
-			Close.IsEnabled = true;
 		}
 	}
 }

@@ -1,12 +1,7 @@
 <UserControl
     x:Class="Crafty.Views.ModWindow"
     xmlns="https://github.com/avaloniaui"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:vm="clr-namespace:Crafty.ViewModels">
-
-    <Design.DataContext>
-        <vm:ModWindowViewModel />
-    </Design.DataContext>
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
     <Grid>
         <Grid.RowDefinitions>

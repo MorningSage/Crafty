@@ -1,5 +1,5 @@
-﻿using System;
-using Downloader;
+﻿using Downloader;
+using System;
 
 namespace Crafty.Models
 {

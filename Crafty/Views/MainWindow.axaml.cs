@@ -1,17 +1,16 @@
-using System.Linq;
 using Avalonia.Interactivity;
+using Avalonia.Media;
+using Avalonia.ReactiveUI;
 using CmlLib.Core;
+using CmlLib.Core.Auth;
+using CmlLib.Core.Version;
 using Crafty.Core;
 using Crafty.Managers;
-using System.Threading.Tasks;
-using Avalonia.Media;
-using CmlLib.Core.Auth;
-using Version = Crafty.Models.Version;
-using Avalonia.ReactiveUI;
-using CmlLib.Core.Version;
 using Crafty.ViewModels;
-using ReactiveUI;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
+using Version = Crafty.Models.Version;
 
 namespace Crafty.Views
 {
@@ -20,11 +19,6 @@ namespace Crafty.Views
 		public MainWindow()
 		{
 			InitializeComponent();
-
-			this.WhenActivated(d => d(ViewModel!.ShowSettings.RegisterHandler(ShowSettingsAsync)));
-			this.WhenActivated(d => d(ViewModel!.ShowAccount.RegisterHandler(ShowAccountAsync)));
-			this.WhenActivated(d => d(ViewModel!.ShowAbout.RegisterHandler(ShowAboutAsync)));
-			this.WhenActivated(d => d(ViewModel!.ShowModBrowser.RegisterHandler(ShowModBrowserAsync)));
 
 			try
 			{
@@ -35,8 +29,6 @@ namespace Crafty.Views
 				VersionList.SelectedItem = null;
 			}
 		}
-
-		private void CloseClicked(object? sender, RoutedEventArgs e) => ConfigManager.SaveConfig();
 
 		private async void PlayClicked(object? sender, RoutedEventArgs e)
 		{
@@ -94,36 +86,6 @@ namespace Crafty.Views
 			ProgressBar.Background = Brush.Parse("#141414");
 			ProgressBar.ProgressTextFormat = "";
 			ProgressBar.Value = 0;
-		}
-
-		private async Task ShowSettingsAsync(InteractionContext<SettingsWindowViewModel, MainWindowViewModel?> interaction)
-		{
-			var dialog = new SettingsWindow { DataContext = interaction.Input };
-			var result = await dialog.ShowDialog<MainWindowViewModel?>(this);
-			interaction.SetOutput(result);
-		}
-
-		private async Task ShowAccountAsync(InteractionContext<AccountWindowViewModel, MainWindowViewModel?> interaction)
-		{
-			var dialog = new AccountWindow { DataContext = interaction.Input };
-			var result = await dialog.ShowDialog<MainWindowViewModel?>(this);
-			interaction.SetOutput(result);
-
-			if (Launcher.IsLoggedIn) { Username.Text = Launcher.Session.Username; }
-		}
-
-		private async Task ShowAboutAsync(InteractionContext<AboutWindowViewModel, MainWindowViewModel?> interaction)
-		{
-			var dialog = new AboutWindow { DataContext = interaction.Input };
-			var result = await dialog.ShowDialog<MainWindowViewModel?>(this);
-			interaction.SetOutput(result);
-		}
-
-		private async Task ShowModBrowserAsync(InteractionContext<ModBrowserWindowViewModel, MainWindowViewModel?> interaction)
-		{
-			var dialog = new ModBrowserWindow { DataContext = interaction.Input };
-			var result = await dialog.ShowDialog<MainWindowViewModel?>(this);
-			interaction.SetOutput(result);
 		}
 	}
 }

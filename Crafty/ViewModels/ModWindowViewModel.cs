@@ -1,39 +1,38 @@
-﻿using System;
-using System.Diagnostics;
-using System.Reactive;
-using Crafty.Managers;
+﻿using Crafty.Managers;
 using Crafty.Models;
 using ReactiveUI;
+using System;
+using System.Reactive;
 using Version = Modrinth.Models.Version;
 
 namespace Crafty.ViewModels
 {
-    public class ModWindowViewModel : ReactiveObject, IRoutableViewModel
+	public class ModWindowViewModel : ViewModelBase, IRoutableViewModel
 	{
-        public ModWindowViewModel(Mod mod, IScreen screen)
-        {
-            Mod = mod;
-            HostScreen = screen;
+		public ModWindowViewModel(IScreen screen, Mod mod)
+		{
+			HostScreen = screen;
+			Mod = mod;
 			DownloadModCommand = ReactiveCommand.Create<Version>(DownloadMod);
-        }
+		}
 
-        public IScreen HostScreen { get; }
+		public IScreen HostScreen { get; }
 
-        public string UrlPathSegment { get; } = Guid.NewGuid().ToString().Substring(0, 5);
+		public string UrlPathSegment { get; } = Guid.NewGuid().ToString().Substring(0, 5);
 
-        public Mod Mod { get; }
+		public Mod Mod { get; }
 
-        public ReactiveCommand<Version, Unit> DownloadModCommand { get; }
+		public ReactiveCommand<Version, Unit> DownloadModCommand { get; }
 
-        private void DownloadMod(object selectedItem)
-        {
-	        try
-	        {
-		        Version? version = (Version?)selectedItem;
-		        if (version == null) return;
-		        foreach (var file in version.Files) DownloadManager.Download(file.Url);
-	        }
-	        catch { }
-        }
-    }
+		private void DownloadMod(object selectedItem)
+		{
+			try
+			{
+				Version? version = (Version?)selectedItem;
+				if (version == null) return;
+				foreach (var file in version.Files) DownloadManager.Download(file.Url);
+			}
+			catch { }
+		}
+	}
 }

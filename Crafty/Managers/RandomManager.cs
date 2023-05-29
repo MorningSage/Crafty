@@ -1,8 +1,8 @@
-﻿using System;
-using System.Threading.Tasks;
-using Avalonia;
+﻿using Avalonia;
 using Avalonia.Media.Imaging;
 using Avalonia.Platform;
+using System;
+using System.Threading.Tasks;
 
 namespace Crafty.Managers
 {

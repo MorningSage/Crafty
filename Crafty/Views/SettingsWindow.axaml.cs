@@ -1,33 +1,41 @@
-using System;
-using Avalonia.Controls;
+using Avalonia;
 using Avalonia.Input;
-using Avalonia.Interactivity;
-using Crafty.Core;
+using Avalonia.ReactiveUI;
 using Crafty.Managers;
+using Crafty.ViewModels;
+using System;
 
 namespace Crafty.Views
 {
-	public partial class SettingsWindow : Window
+	public partial class SettingsWindow : ReactiveUserControl<SettingsWindowViewModel>
 	{
-		public SettingsWindow()
+		public SettingsWindow(SettingsWindowViewModel viewModel)
 		{
 			InitializeComponent();
-		}
-
-		private void CloseClicked(object? sender, RoutedEventArgs e) => Close();
-
-		private void SaveClicked(object? sender, RoutedEventArgs e)
-		{
-			ConfigManager.Config.Ram = Convert.ToInt32(RamSlider.Value);
-			ConfigManager.Config.GetSnapshots = (bool)ShowSnapshotsCheck.IsChecked;
-			ConfigManager.Config.GetBetas = (bool)ShowBetasCheck.IsChecked;
-			ConfigManager.Config.GetAlphas = (bool)ShowAlphasCheck.IsChecked;
-			ConfigManager.SaveConfig();
-			Launcher.VersionList = VersionManager.GetVersions();
-			Close();
+			DataContext = viewModel;
 		}
 
 		private void RamSlider_OnPointerMoved(object? sender, PointerEventArgs e) => RamText.Text = $"{RamSlider.Value}MB";
 		private void RamSlider_OnPointerExited(object? sender, PointerEventArgs e) => RamText.Text = "RAM Usage";
+
+		private void RamSlider_OnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+		{
+			if (RamSlider != null) ConfigManager.Config.Ram = Convert.ToInt32(RamSlider.Value);
+		}
+
+		private void ShowSnapshotsCheck_OnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+		{
+			if (ShowSnapshotsCheck.IsChecked != null) ConfigManager.Config.GetSnapshots = (bool)ShowSnapshotsCheck.IsChecked;
+		}
+
+		private void ShowBetasCheck_OnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+		{
+			if (ShowBetasCheck.IsChecked != null) ConfigManager.Config.GetBetas = (bool)ShowBetasCheck.IsChecked;
+		}
+
+		private void ShowAlphasCheck_OnPropertyChanged(object? sender, AvaloniaPropertyChangedEventArgs e)
+		{
+			if (ShowAlphasCheck.IsChecked != null) ConfigManager.Config.GetAlphas = (bool)ShowAlphasCheck.IsChecked;
+		}
 	}
 }

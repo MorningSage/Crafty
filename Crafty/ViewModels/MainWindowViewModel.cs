@@ -1,21 +1,19 @@
-﻿using System;
-using System.Diagnostics;
-using System.IO;
-using System.Reactive.Linq;
-using System.Threading.Tasks;
-using Avalonia.Collections;
+﻿using Avalonia.Collections;
+using Avalonia.Media.Imaging;
 using CmlLib.Core.Downloader;
 using Crafty.Core;
-using ReactiveUI;
-using Version = Crafty.Models.Version;
-using System.Windows.Input;
 using Crafty.Managers;
+using ReactiveUI;
+using System;
+using System.IO;
 using System.Linq;
-using Avalonia.Media.Imaging;
+using System.Reactive;
+using System.Threading.Tasks;
+using Version = Crafty.Models.Version;
 
 namespace Crafty.ViewModels
 {
-	public class MainWindowViewModel : ViewModelBase
+	public class MainWindowViewModel : ReactiveObject, IScreen
 	{
 		public MainWindowViewModel()
 		{
@@ -33,48 +31,6 @@ namespace Crafty.ViewModels
 			{
 				Username = ConfigManager.Config.Username;
 			}
-
-			ShowSettings = new Interaction<SettingsWindowViewModel, MainWindowViewModel?>();
-
-			OpenSettingsCommand = ReactiveCommand.CreateFromTask(async () =>
-			{
-				IsDialogVisible = true;
-				var viewModel = new SettingsWindowViewModel();
-				var result = await ShowSettings.Handle(viewModel);
-				VersionList = Launcher.VersionList;
-				IsDialogVisible = false;
-			});
-
-			ShowAccount = new Interaction<AccountWindowViewModel, MainWindowViewModel?>();
-
-			OpenAccountCommand = ReactiveCommand.CreateFromTask(async () =>
-			{
-				IsDialogVisible = true;
-				var viewModel = new AccountWindowViewModel();
-				var result = await ShowAccount.Handle(viewModel);
-				IsDialogVisible = false;
-				IsLoggedIn = Launcher.IsLoggedIn;
-			});
-
-			ShowAbout = new Interaction<AboutWindowViewModel, MainWindowViewModel?>();
-
-			OpenAboutCommand = ReactiveCommand.CreateFromTask(async () =>
-			{
-				IsDialogVisible = true;
-				var viewModel = new AboutWindowViewModel();
-				var result = await ShowAbout.Handle(viewModel);
-				IsDialogVisible = false;
-			});
-
-			ShowModBrowser = new Interaction<ModBrowserWindowViewModel, MainWindowViewModel?>();
-
-			OpenModBrowserCommand = ReactiveCommand.CreateFromTask(async () =>
-			{
-				IsDialogVisible = true;
-				var viewModel = new ModBrowserWindowViewModel();
-				var result = await ShowModBrowser.Handle(viewModel);
-				IsDialogVisible = false;
-			});
 
 			try
 			{
@@ -113,6 +69,12 @@ namespace Crafty.ViewModels
 			{
 				SelectedItem = null;
 			}
+
+			NavigateAboutCommand = ReactiveCommand.Create(NavigateAbout);
+			NavigateAccountCommand = ReactiveCommand.Create(NavigateAccount);
+			NavigateModBrowserCommand = ReactiveCommand.Create(NavigateModBrowser);
+			NavigateSettingsCommand = ReactiveCommand.Create(NavigateSettings);
+			NavigateBackCommand = ReactiveCommand.Create(NavigateBack);
 		}
 
 		public string Title => $"Crafty ({Launcher.Version})";
@@ -141,14 +103,6 @@ namespace Crafty.ViewModels
 		{
 			get => _progressBarValue;
 			set => this.RaiseAndSetIfChanged(ref _progressBarValue, value);
-		}
-
-		private bool _isDialogVisible;
-
-		public bool IsDialogVisible
-		{
-			get => _isDialogVisible;
-			set => this.RaiseAndSetIfChanged(ref _isDialogVisible, value);
 		}
 
 		private AvaloniaList<Version> _versionList;
@@ -183,16 +137,37 @@ namespace Crafty.ViewModels
 			set => this.RaiseAndSetIfChanged(ref _selectedItem, value);
 		}
 
-		public Interaction<SettingsWindowViewModel, MainWindowViewModel?> ShowSettings { get; }
-		public ICommand OpenSettingsCommand { get; }
+		public RoutingState Router { get; } = new();
 
-		public Interaction<AccountWindowViewModel, MainWindowViewModel?> ShowAccount { get; }
-		public ICommand OpenAccountCommand { get; }
+		public ReactiveCommand<Unit, Unit> NavigateAboutCommand { get; }
+		public ReactiveCommand<Unit, Unit> NavigateAccountCommand { get; }
+		public ReactiveCommand<Unit, Unit> NavigateModBrowserCommand { get; }
+		public ReactiveCommand<Unit, Unit> NavigateSettingsCommand { get; }
+		public ReactiveCommand<Unit, Unit> NavigateBackCommand { get; }
 
-		public Interaction<AboutWindowViewModel, MainWindowViewModel?> ShowAbout { get; }
-		public ICommand OpenAboutCommand { get; }
+		private void NavigateAbout() => Router.Navigate.Execute(new AboutWindowViewModel(this));
+		private void NavigateAccount() => Router.Navigate.Execute(new AccountWindowViewModel(this));
+		private void NavigateModBrowser() => Router.Navigate.Execute(new ModBrowserWindowViewModel(this, Router));
+		private void NavigateSettings() => Router.Navigate.Execute(new SettingsWindowViewModel(this));
 
-		public Interaction<ModBrowserWindowViewModel, MainWindowViewModel?> ShowModBrowser { get; }
-		public ICommand OpenModBrowserCommand { get; }
+		public void NavigateBack()
+		{
+			try
+			{
+				IRoutableViewModel? currentViewModel = Router.GetCurrentViewModel();
+
+				Router.NavigateBack.Execute();
+
+				if (currentViewModel.GetType() == typeof(AccountWindowViewModel) && Launcher.IsLoggedIn)
+				{
+					Username = Launcher.Session.Username;
+				}
+				else if (currentViewModel.GetType() == typeof(SettingsWindowViewModel))
+				{
+					ConfigManager.SaveConfig();
+				}
+			}
+			catch { }
+		}
 	}
 }

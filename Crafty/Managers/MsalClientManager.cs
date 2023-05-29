@@ -1,11 +1,10 @@
-﻿using System.Diagnostics;
-using System.IO;
-using System.Threading.Tasks;
-using CmlLib.Core.Auth;
+﻿using CmlLib.Core.Auth;
 using CmlLib.Core.Auth.Microsoft;
 using CmlLib.Core.Auth.Microsoft.MsalClient;
 using Crafty.Core;
 using Microsoft.Identity.Client;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Crafty.Managers
 {

@@ -1,94 +1,77 @@
-﻿using System.Diagnostics;
-using Modrinth.Models;
-using ReactiveUI;
-using System.Reactive;
-using Modrinth;
-using Avalonia.Collections;
+﻿using Avalonia.Collections;
 using Crafty.Managers;
 using Crafty.Models;
+using Modrinth;
+using Modrinth.Models;
 using Modrinth.Models.Enums.Project;
+using ReactiveUI;
+using System;
+using System.Reactive;
 
 namespace Crafty.ViewModels
 {
-    public class ModBrowserWindowViewModel : ReactiveObject, IScreen
+	public class ModBrowserWindowViewModel : ViewModelBase, IRoutableViewModel
 	{
-		public ModBrowserWindowViewModel()
-        {
-	        SearchModsCommand = ReactiveCommand.Create<string>(SearchMods);
-            NavigateBackCommand = ReactiveCommand.Create(NavigateBack);
+		public ModBrowserWindowViewModel(IScreen screen, RoutingState router)
+		{
+			HostScreen = screen;
+			Router = router;
+			SearchModsCommand = ReactiveCommand.Create<string>(SearchMods);
 		}
 
-		public RoutingState Router { get; } = new();
+		public IScreen HostScreen { get; }
+
+		public RoutingState Router { get; }
+
+		public string UrlPathSegment { get; } = Guid.NewGuid().ToString().Substring(0, 5);
 
 		private AvaloniaList<Mod> _results = new();
 
-        public AvaloniaList<Mod> Results
-        {
-            get => _results;
-            set => this.RaiseAndSetIfChanged(ref _results, value);
-        }
+		public AvaloniaList<Mod> Results
+		{
+			get => _results;
+			set => this.RaiseAndSetIfChanged(ref _results, value);
+		}
 
-        private bool _searching;
+		private bool _searching;
 
-        public bool Searching
-        {
-            get => _searching;
-            set => this.RaiseAndSetIfChanged(ref _searching, value);
-        }
+		public bool Searching
+		{
+			get => _searching;
+			set => this.RaiseAndSetIfChanged(ref _searching, value);
+		}
 
-        private string _searchButtonText = "Search";
+		private string _searchButtonText = "Search";
 
-        public string SearchButtonText
-        {
-            get => _searchButtonText;
-            set => this.RaiseAndSetIfChanged(ref _searchButtonText, value);
-        }
+		public string SearchButtonText
+		{
+			get => _searchButtonText;
+			set => this.RaiseAndSetIfChanged(ref _searchButtonText, value);
+		}
 
-        public ReactiveCommand<string, Unit> SearchModsCommand { get; }
+		public ReactiveCommand<string, Unit> SearchModsCommand { get; }
 
-        private async void SearchMods(string query)
-        {
-            Searching = true;
-            SearchButtonText = "Searching...";
+		private async void SearchMods(string query)
+		{
+			Searching = true;
+			SearchButtonText = "Searching...";
 
-            Results.Clear();
-            var search = await ModrinthManager.Client.Project.SearchAsync(query, facets: new() { Facet.ProjectType(ProjectType.Mod) });
+			Results.Clear();
+			var search = await ModrinthManager.Client.Project.SearchAsync(query, facets: new() { Facet.ProjectType(ProjectType.Mod) });
 
-            foreach (SearchResult searchResult in search.Hits)
-            {
-	            var projectVersionList = await ModrinthManager.Client.Version.GetProjectVersionListAsync(searchResult.ProjectId);
-                Results.Add(new Mod(searchResult, projectVersionList));
-            }
+			foreach (SearchResult searchResult in search.Hits)
+			{
+				var projectVersionList = await ModrinthManager.Client.Version.GetProjectVersionListAsync(searchResult.ProjectId);
+				Results.Add(new Mod(searchResult, projectVersionList));
+			}
 
-            Searching = false;
-            SearchButtonText = "Search";
-        }
+			Searching = false;
+			SearchButtonText = "Search";
+		}
 
-        private Mod _selectedMod;
-
-        public Mod SelectedMod
-        {
-	        get => _selectedMod;
-	        set
-	        {
-		        if (Searching) return;
-
-		        if (value == null) value = SelectedMod;
-
-	            this.RaiseAndSetIfChanged(ref _selectedMod, value);
-                Router.Navigate.Execute(new ModWindowViewModel(value, this));
-	        }
-        }
-
-        public ReactiveCommand<Unit, Unit> NavigateBackCommand { get; }
-
-        private void NavigateBack()
-        {
-	        try
-	        {
-		        Router.NavigateBack.Execute();
-	        }
-	        catch { }
-        } 
+		public void NavigateToMod(Mod mod)
+		{
+			Router.Navigate.Execute(new ModWindowViewModel(HostScreen, mod));
+		}
 	}
 }

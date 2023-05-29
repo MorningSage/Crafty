@@ -1,13 +1,24 @@
-﻿using System.IO;
-using System.Threading.Tasks;
-using Avalonia.Media.Imaging;
+﻿using Avalonia.Media.Imaging;
 using Crafty.Core;
 using Downloader;
+using ReactiveUI;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Crafty.ViewModels
 {
-	public class AccountWindowViewModel : ViewModelBase
+	public class AccountWindowViewModel : ViewModelBase, IRoutableViewModel
 	{
+		public AccountWindowViewModel(IScreen screen)
+		{
+			HostScreen = screen;
+		}
+
+		public IScreen HostScreen { get; }
+
+		public string UrlPathSegment { get; } = Guid.NewGuid().ToString().Substring(0, 5);
+
 		public Task<Bitmap?> Skin => DownloadSkin();
 
 		private async Task<Bitmap?> DownloadSkin()
