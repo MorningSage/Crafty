@@ -156,8 +156,6 @@ namespace Crafty.ViewModels
 			{
 				IRoutableViewModel? currentViewModel = Router.GetCurrentViewModel();
 
-				Router.NavigateBack.Execute();
-
 				if (currentViewModel.GetType() == typeof(AccountWindowViewModel) && Launcher.IsLoggedIn)
 				{
 					Username = Launcher.Session.Username;
@@ -166,6 +164,8 @@ namespace Crafty.ViewModels
 				{
 					ConfigManager.SaveConfig();
 				}
+
+				Router.NavigateBack.Execute();
 			}
 			catch { }
 		}

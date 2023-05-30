@@ -1,5 +1,4 @@
-﻿using Crafty.Core;
-using ReactiveUI;
+﻿using ReactiveUI;
 using System;
 
 namespace Crafty.ViewModels
@@ -14,11 +13,5 @@ namespace Crafty.ViewModels
 		public IScreen HostScreen { get; }
 
 		public string UrlPathSegment { get; } = Guid.NewGuid().ToString().Substring(0, 5);
-
-		public int PhysicalMemory
-		{
-			get => Launcher.PhysicalMemory;
-			set => this.RaiseAndSetIfChanged(ref Launcher.PhysicalMemory, value);
-		}
 	}
 }

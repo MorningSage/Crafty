@@ -31,14 +31,10 @@
                     Focusable="False"
                     IsSnapToTickEnabled="True"
                     LargeChange="0"
-                    Maximum="{Binding PhysicalMemory}"
-                    Minimum="2048"
                     PointerExited="RamSlider_OnPointerExited"
                     PointerMoved="RamSlider_OnPointerMoved"
-                    PropertyChanged="RamSlider_OnPropertyChanged"
-                    TickFrequency="2048"
-                    TickPlacement="BottomRight"
-                    Value="{Binding Config.Ram}" />
+                    TickFrequency="1024"
+                    TickPlacement="BottomRight" />
             </Grid>
 
             <Separator Margin="10" />

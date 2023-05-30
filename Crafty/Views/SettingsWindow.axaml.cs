@@ -1,6 +1,7 @@
 using Avalonia;
 using Avalonia.Input;
 using Avalonia.ReactiveUI;
+using Crafty.Core;
 using Crafty.Managers;
 using Crafty.ViewModels;
 using System;
@@ -13,6 +14,11 @@ namespace Crafty.Views
 		{
 			InitializeComponent();
 			DataContext = viewModel;
+
+			RamSlider.Minimum = 1024;
+			RamSlider.Maximum = Launcher.PhysicalMemory;
+			RamSlider.Value = ConfigManager.Config.Ram;
+			RamSlider.PropertyChanged += RamSlider_OnPropertyChanged;
 		}
 
 		private void RamSlider_OnPointerMoved(object? sender, PointerEventArgs e) => RamText.Text = $"{RamSlider.Value}MB";

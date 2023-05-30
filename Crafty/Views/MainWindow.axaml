@@ -149,7 +149,7 @@
                                 Width="200"
                                 Margin="0,10,10,10"
                                 VerticalAlignment="Stretch"
-                                Items="{Binding VersionList}"
+                                ItemsSource="{Binding VersionList}"
                                 MaxDropDownHeight="300"
                                 PlaceholderForeground="Gray"
                                 PlaceholderText="Version"

@@ -36,7 +36,7 @@
                 Margin="10,0"
                 Background="#141414"
                 Focusable="False"
-                Items="{Binding Results}"
+                ItemsSource="{Binding Results}"
                 SelectionChanged="ModList_OnSelectionChanged">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
