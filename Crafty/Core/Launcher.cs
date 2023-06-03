@@ -66,4 +66,3 @@ public static class Launcher
 		return physicalMemory;
 	}
 }
-

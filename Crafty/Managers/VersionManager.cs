@@ -38,7 +38,6 @@ namespace Crafty.Managers
 					versionList.Add(new Version(version.Name, version.Name, version.Type));
 				else if (version.Type == "old_alpha" && config.GetAlphas)
 					versionList.Add(new Version(version.Name, version.Name, version.Type));
-
 			}
 
 			return versionList;
