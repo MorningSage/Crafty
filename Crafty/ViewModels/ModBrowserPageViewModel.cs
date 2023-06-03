@@ -10,9 +10,9 @@ using System.Reactive;
 
 namespace Crafty.ViewModels
 {
-	public class ModBrowserWindowViewModel : ViewModelBase, IRoutableViewModel
+	public class ModBrowserPageViewModel : ViewModelBase, IRoutableViewModel
 	{
-		public ModBrowserWindowViewModel(IScreen screen, RoutingState router)
+		public ModBrowserPageViewModel(IScreen screen, RoutingState router)
 		{
 			HostScreen = screen;
 			Router = router;
@@ -72,7 +72,7 @@ namespace Crafty.ViewModels
 
 		public void NavigateToMod(Mod mod)
 		{
-			Router.Navigate.Execute(new ModWindowViewModel(HostScreen, mod));
+			Router.Navigate.Execute(new ModOverviewPageViewModel(HostScreen, mod));
 		}
 	}
 }

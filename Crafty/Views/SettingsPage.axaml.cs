@@ -8,9 +8,9 @@ using System;
 
 namespace Crafty.Views
 {
-	public partial class SettingsWindow : ReactiveUserControl<SettingsWindowViewModel>
+	public partial class SettingsPage : ReactiveUserControl<SettingsPageViewModel>
 	{
-		public SettingsWindow(SettingsWindowViewModel viewModel)
+		public SettingsPage(SettingsPageViewModel viewModel)
 		{
 			InitializeComponent();
 			DataContext = viewModel;

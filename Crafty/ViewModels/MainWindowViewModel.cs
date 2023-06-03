@@ -145,10 +145,10 @@ namespace Crafty.ViewModels
 		public ReactiveCommand<Unit, Unit> NavigateSettingsCommand { get; }
 		public ReactiveCommand<Unit, Unit> NavigateBackCommand { get; }
 
-		private void NavigateAbout() => Router.Navigate.Execute(new AboutWindowViewModel(this));
-		private void NavigateAccount() => Router.Navigate.Execute(new AccountWindowViewModel(this));
-		private void NavigateModBrowser() => Router.Navigate.Execute(new ModBrowserWindowViewModel(this, Router));
-		private void NavigateSettings() => Router.Navigate.Execute(new SettingsWindowViewModel(this));
+		private void NavigateAbout() => Router.Navigate.Execute(new AboutPageViewModel(this));
+		private void NavigateAccount() => Router.Navigate.Execute(new AccountPageViewModel(this));
+		private void NavigateModBrowser() => Router.Navigate.Execute(new ModBrowserPageViewModel(this, Router));
+		private void NavigateSettings() => Router.Navigate.Execute(new SettingsPageViewModel(this));
 
 		public void NavigateBack()
 		{
@@ -156,11 +156,11 @@ namespace Crafty.ViewModels
 			{
 				IRoutableViewModel? currentViewModel = Router.GetCurrentViewModel();
 
-				if (currentViewModel.GetType() == typeof(AccountWindowViewModel) && Launcher.IsLoggedIn)
+				if (currentViewModel.GetType() == typeof(AccountPageViewModel) && Launcher.IsLoggedIn)
 				{
 					Username = Launcher.Session.Username;
 				}
-				else if (currentViewModel.GetType() == typeof(SettingsWindowViewModel))
+				else if (currentViewModel.GetType() == typeof(SettingsPageViewModel))
 				{
 					ConfigManager.SaveConfig();
 				}

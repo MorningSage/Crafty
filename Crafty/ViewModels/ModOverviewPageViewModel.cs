@@ -7,9 +7,9 @@ using Version = Modrinth.Models.Version;
 
 namespace Crafty.ViewModels
 {
-	public class ModWindowViewModel : ViewModelBase, IRoutableViewModel
+	public class ModOverviewPageViewModel : ViewModelBase, IRoutableViewModel
 	{
-		public ModWindowViewModel(IScreen screen, Mod mod)
+		public ModOverviewPageViewModel(IScreen screen, Mod mod)
 		{
 			HostScreen = screen;
 			Mod = mod;

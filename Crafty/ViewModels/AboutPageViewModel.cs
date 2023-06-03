@@ -4,9 +4,9 @@ using System;
 
 namespace Crafty.ViewModels
 {
-	public class AboutWindowViewModel : ViewModelBase, IRoutableViewModel
+	public class AboutPageViewModel : ViewModelBase, IRoutableViewModel
 	{
-		public AboutWindowViewModel(IScreen screen)
+		public AboutPageViewModel(IScreen screen)
 		{
 			HostScreen = screen;
 		}

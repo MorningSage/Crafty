@@ -11,16 +11,16 @@ namespace Crafty
 		{
 			switch (viewModel)
 			{
-				case AboutWindowViewModel context:
-					return new AboutWindow(context);
-				case AccountWindowViewModel context:
-					return new AccountWindow(context);
-				case ModBrowserWindowViewModel context:
-					return new ModBrowserWindow(context);
-				case ModWindowViewModel context:
-					return new ModWindow(context);
-				case SettingsWindowViewModel context:
-					return new SettingsWindow(context);
+				case AboutPageViewModel context:
+					return new AboutPage(context);
+				case AccountPageViewModel context:
+					return new AccountPage(context);
+				case ModBrowserPageViewModel context:
+					return new ModBrowserPage(context);
+				case ModOverviewPageViewModel context:
+					return new ModOverviewPage(context);
+				case SettingsPageViewModel context:
+					return new SettingsPage(context);
 				default:
 					throw new ArgumentOutOfRangeException(nameof(viewModel));
 			}

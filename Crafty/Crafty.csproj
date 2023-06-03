@@ -36,20 +36,20 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Views\ModWindow.axaml.cs">
-      <DependentUpon>%(Filename)</DependentUpon>
+    <Compile Update="Views\ModOverviewPage.axaml.cs">
+      <DependentUpon>ModOverviewPage.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\AboutWindow.axaml.cs">
-      <DependentUpon>AboutWindow.axaml</DependentUpon>
+    <Compile Update="Views\AboutPage.axaml.cs">
+      <DependentUpon>AboutPage.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\ModBrowserWindow.axaml.cs">
-      <DependentUpon>ModBrowserWindow.axaml</DependentUpon>
+    <Compile Update="Views\ModBrowserPage.axaml.cs">
+      <DependentUpon>ModBrowserPage.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\SettingsWindow.axaml.cs">
-      <DependentUpon>SettingsWindow.axaml</DependentUpon>
+    <Compile Update="Views\SettingsPage.axaml.cs">
+      <DependentUpon>SettingsPage.axaml</DependentUpon>
     </Compile>
-    <Compile Update="Views\AccountWindow.axaml.cs">
-      <DependentUpon>AccountWindow.axaml</DependentUpon>
+    <Compile Update="Views\AccountPage.axaml.cs">
+      <DependentUpon>AccountPage.axaml</DependentUpon>
     </Compile>
   </ItemGroup>
 </Project>

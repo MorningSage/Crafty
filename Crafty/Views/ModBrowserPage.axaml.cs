@@ -5,9 +5,9 @@ using Crafty.ViewModels;
 
 namespace Crafty.Views
 {
-	public partial class ModBrowserWindow : ReactiveUserControl<ModBrowserWindowViewModel>
+	public partial class ModBrowserPage : ReactiveUserControl<ModBrowserPageViewModel>
 	{
-		public ModBrowserWindow(ModBrowserWindowViewModel viewModel)
+		public ModBrowserPage(ModBrowserPageViewModel viewModel)
 		{
 			InitializeComponent();
 			DataContext = viewModel;
@@ -19,7 +19,7 @@ namespace Crafty.Views
 
 			if (mod != null)
 			{
-				((ModBrowserWindowViewModel)DataContext).NavigateToMod(mod);
+				((ModBrowserPageViewModel)DataContext).NavigateToMod(mod);
 			}
 		}
 	}

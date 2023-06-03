@@ -3,9 +3,9 @@ using Crafty.ViewModels;
 
 namespace Crafty.Views
 {
-	public partial class AboutWindow : ReactiveUserControl<AboutWindowViewModel>
+	public partial class ModOverviewPage : ReactiveUserControl<ModOverviewPageViewModel>
 	{
-		public AboutWindow(AboutWindowViewModel viewModel)
+		public ModOverviewPage(ModOverviewPageViewModel viewModel)
 		{
 			InitializeComponent();
 			DataContext = viewModel;

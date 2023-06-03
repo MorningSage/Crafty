@@ -5,9 +5,9 @@ using Crafty.ViewModels;
 
 namespace Crafty.Views
 {
-	public partial class AccountWindow : ReactiveUserControl<AccountWindowViewModel>
+	public partial class AccountPage : ReactiveUserControl<AccountPageViewModel>
 	{
-		public AccountWindow(AccountWindowViewModel viewModel)
+		public AccountPage(AccountPageViewModel viewModel)
 		{
 			InitializeComponent();
 			DataContext = viewModel;

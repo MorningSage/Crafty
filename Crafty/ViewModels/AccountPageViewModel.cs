@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Crafty.ViewModels
 {
-	public class AccountWindowViewModel : ViewModelBase, IRoutableViewModel
+	public class AccountPageViewModel : ViewModelBase, IRoutableViewModel
 	{
-		public AccountWindowViewModel(IScreen screen)
+		public AccountPageViewModel(IScreen screen)
 		{
 			HostScreen = screen;
 		}
