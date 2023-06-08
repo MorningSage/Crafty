@@ -1,5 +1,4 @@
-﻿using Avalonia.Interactivity;
-using Avalonia.Media.Imaging;
+﻿using Avalonia.Media.Imaging;
 using Crafty.Core;
 using Downloader;
 using ReactiveUI;
