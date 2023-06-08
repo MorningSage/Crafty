@@ -56,14 +56,22 @@ namespace Crafty.ViewModels
 			Searching = true;
 			SearchButtonText = "Searching...";
 
-			Results.Clear();
-			var search = await ModrinthManager.Client.Project.SearchAsync(query, facets: new() { Facet.ProjectType(ProjectType.Mod) });
-
-			foreach (SearchResult searchResult in search.Hits)
+			try
 			{
-				var project = await ModrinthManager.Client.Project.GetAsync(searchResult.ProjectId);
-				var projectVersionList = await ModrinthManager.Client.Version.GetProjectVersionListAsync(searchResult.ProjectId);
-				Results.Add(new Mod(searchResult, projectVersionList, project));
+				Results.Clear();
+				var search = await ModrinthManager.Client.Project.SearchAsync(query,
+					facets: new() { Facet.ProjectType(ProjectType.Mod) });
+
+				foreach (SearchResult searchResult in search.Hits)
+				{
+					var project = await ModrinthManager.Client.Project.GetAsync(searchResult.ProjectId);
+					var projectVersionList = await ModrinthManager.Client.Version.GetProjectVersionListAsync(searchResult.ProjectId);
+					Results.Add(new Mod(searchResult, projectVersionList, project));
+				}
+			}
+			catch
+			{
+				Results.Clear();
 			}
 
 			Searching = false;
