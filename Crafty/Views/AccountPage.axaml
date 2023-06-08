@@ -8,46 +8,48 @@
             Name="LoggingIn"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"
+            FontSize="24"
             Text="Logging in..." />
 
-        <Grid Name="LoggedInPanel" IsVisible="False">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="50*" />
-                <ColumnDefinition Width="50*" />
-            </Grid.ColumnDefinitions>
-
+        <StackPanel
+            Name="LoggedInPanel"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"
+            IsVisible="False"
+            Orientation="Horizontal">
             <Image
                 Name="Skin"
-                Grid.Column="0"
-                MaxHeight="256"
-                Margin="10"
+                Height="256"
+                Margin="20"
+                HorizontalAlignment="Right"
                 Source="{Binding Skin^}" />
 
             <StackPanel
                 Name="LoginInfoPanel"
-                Grid.Column="1"
+                Margin="20"
                 VerticalAlignment="Center"
                 Orientation="Vertical">
                 <TextBox
                     Name="Username"
-                    Margin="10,5"
+                    Width="300"
+                    Margin="0,5"
+                    HorizontalAlignment="Left"
                     FontSize="24"
                     IsEnabled="False"
                     Watermark="Username" />
 
                 <Button
                     Name="Logout"
-                    Margin="10,5"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Center"
+                    Width="300"
+                    Margin="0,5"
+                    HorizontalAlignment="Left"
                     HorizontalContentAlignment="Center"
-                    VerticalContentAlignment="Center"
                     Background="#8a1a1a"
-                    Click="LogoutClicked"
+                    Command="{Binding LogoutCommand}"
                     FontSize="24">
                     Logout
                 </Button>
             </StackPanel>
-        </Grid>
+        </StackPanel>
     </Grid>
 </UserControl>

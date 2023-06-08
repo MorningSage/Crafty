@@ -1,21 +1,27 @@
-﻿using Avalonia.Media.Imaging;
+﻿using Avalonia.Interactivity;
+using Avalonia.Media.Imaging;
 using Crafty.Core;
 using Downloader;
 using ReactiveUI;
 using System;
 using System.IO;
+using System.Reactive;
 using System.Threading.Tasks;
 
 namespace Crafty.ViewModels
 {
 	public class AccountPageViewModel : ViewModelBase, IRoutableViewModel
 	{
-		public AccountPageViewModel(IScreen screen)
+		public AccountPageViewModel(IScreen screen, RoutingState router)
 		{
 			HostScreen = screen;
+			Router = router;
+			LogoutCommand = ReactiveCommand.Create(Logout);
 		}
 
 		public IScreen HostScreen { get; }
+
+		private RoutingState Router { get; }
 
 		public string UrlPathSegment { get; } = Guid.NewGuid().ToString().Substring(0, 5);
 
@@ -40,6 +46,14 @@ namespace Crafty.ViewModels
 			{
 				return null;
 			}
+		}
+
+		public ReactiveCommand<Unit, Unit> LogoutCommand { get; }
+
+		private async void Logout()
+		{
+			await Launcher.Logout();
+			Router.NavigateBack.Execute();
 		}
 	}
 }

@@ -14,13 +14,6 @@ namespace Crafty.Views
 			Login();
 		}
 
-		private async void LogoutClicked(object? sender, RoutedEventArgs e)
-		{
-			LoggedInPanel.IsVisible = false;
-
-			await Launcher.Logout();
-		}
-
 		private async void Login()
 		{
 			bool results = await Launcher.Login();

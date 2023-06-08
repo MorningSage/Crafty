@@ -146,7 +146,7 @@ namespace Crafty.ViewModels
 		public ReactiveCommand<Unit, Unit> NavigateBackCommand { get; }
 
 		private void NavigateAbout() => Router.Navigate.Execute(new AboutPageViewModel(this));
-		private void NavigateAccount() => Router.Navigate.Execute(new AccountPageViewModel(this));
+		private void NavigateAccount() => Router.Navigate.Execute(new AccountPageViewModel(this, Router));
 		private void NavigateModBrowser() => Router.Navigate.Execute(new ModBrowserPageViewModel(this, Router));
 		private void NavigateSettings() => Router.Navigate.Execute(new SettingsPageViewModel(this));
 
