@@ -66,6 +66,7 @@ namespace Crafty.ViewModels
 				{
 					var project = await ModrinthManager.Client.Project.GetAsync(searchResult.ProjectId);
 					var projectVersionList = await ModrinthManager.Client.Version.GetProjectVersionListAsync(searchResult.ProjectId);
+					project.Body = project.Body.Replace("<br>", "\n").Replace("**", "");
 					Results.Add(new Mod(searchResult, projectVersionList, project));
 				}
 			}
