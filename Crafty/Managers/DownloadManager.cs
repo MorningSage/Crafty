@@ -3,6 +3,9 @@ using Downloader;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http.Headers;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace Crafty.Managers
 {
@@ -26,10 +29,38 @@ namespace Crafty.Managers
 			while (_queue.Count > 0)
 			{
 				DownloadItem item = _queue.Dequeue();
-				await item.Downloader.DownloadFileTaskAsync(item.Url, $"{DownloadPath}/{item.Filename}");
+				await item.Downloader.DownloadFileTaskAsync(await GetRedirectedUrl(item.Url), $"{DownloadPath}/{item.Filename}");
 			}
 
 			_isDownloading = false;
+		}
+
+		public static async Task<string> GetRedirectedUrl(string url)
+		{
+			// Fix for Downloader not downloading mods from CurseForge
+			// https://github.com/bezzad/Downloader/issues/31
+
+			var handler = new HttpClientHandler()
+			{
+				AllowAutoRedirect = false
+			};
+
+			string redirectedUrl = null;
+
+			using (HttpClient client = new HttpClient(handler))
+			using (HttpResponseMessage response = await client.GetAsync(url))
+			{
+				if (response.StatusCode == System.Net.HttpStatusCode.Found)
+				{
+					HttpResponseHeaders headers = response.Headers;
+					if (headers != null && headers.Location != null)
+					{
+						redirectedUrl = headers.Location.AbsoluteUri;
+					}
+				}
+			}
+
+			return redirectedUrl;
 		}
 	}
 }
