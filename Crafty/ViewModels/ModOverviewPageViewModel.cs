@@ -3,7 +3,6 @@ using Crafty.Models;
 using ReactiveUI;
 using System;
 using System.Reactive;
-using Version = Modrinth.Models.Version;
 
 namespace Crafty.ViewModels
 {
@@ -13,7 +12,7 @@ namespace Crafty.ViewModels
 		{
 			HostScreen = screen;
 			Mod = mod;
-			DownloadModCommand = ReactiveCommand.Create<Version>(DownloadMod);
+			DownloadModCommand = ReactiveCommand.Create<ModVersion>(DownloadMod);
 		}
 
 		public IScreen HostScreen { get; }
@@ -22,15 +21,15 @@ namespace Crafty.ViewModels
 
 		public Mod Mod { get; }
 
-		public ReactiveCommand<Version, Unit> DownloadModCommand { get; }
+		public ReactiveCommand<ModVersion, Unit> DownloadModCommand { get; }
 
 		private void DownloadMod(object selectedItem)
 		{
 			try
 			{
-				Version? version = (Version?)selectedItem;
+				ModVersion? version = (ModVersion?)selectedItem;
 				if (version == null) return;
-				foreach (var file in version.Files) DownloadManager.Download(file.Url);
+				DownloadManager.Download(version.DownloadUrl);
 			}
 			catch { }
 		}
