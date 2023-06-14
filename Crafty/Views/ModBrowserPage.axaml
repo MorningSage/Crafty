@@ -17,8 +17,9 @@
             <CheckBox
                 Name="UseCurseForge"
                 Margin="5,0"
-                IsCheckedChanged="ToggleButton_OnIsCheckedChanged"
-                IsEnabled="{Binding !Searching}" />
+                Checked="UseCurseForge_OnChecked"
+                IsEnabled="{Binding !Searching}"
+                Unchecked="UseCurseForge_OnUnchecked" />
 
             <TextBlock VerticalAlignment="Center">
                 Use CurseForge? (BETA)

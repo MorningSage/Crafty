@@ -24,9 +24,14 @@ namespace Crafty.Views
 			}
 		}
 
-		private void ToggleButton_OnIsCheckedChanged(object? sender, RoutedEventArgs e)
+		private void UseCurseForge_OnChecked(object? sender, RoutedEventArgs e)
 		{
-			((ModBrowserPageViewModel)DataContext).UseCurseForge = (bool)UseCurseForge.IsChecked;
+			((ModBrowserPageViewModel)DataContext).UseCurseForge = true;
+		}
+
+		private void UseCurseForge_OnUnchecked(object? sender, RoutedEventArgs e)
+		{
+			((ModBrowserPageViewModel)DataContext).UseCurseForge = false;
 		}
 	}
 }
